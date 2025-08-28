@@ -1,6 +1,7 @@
 import { z } from 'zod';
 
 export const powReactionChallengeSchema = z.object({
+	reaction: z.string().min(1).max(6),
 	difficulty: z
 		.number()
 		.min(0)

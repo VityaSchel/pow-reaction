@@ -53,6 +53,7 @@ export class PowReaction {
 		}
 
 		const challenge: PowReactionChallenge = {
+			reaction: this.reaction,
 			difficulty,
 			expiresAt,
 			ip,
@@ -90,6 +91,10 @@ export class PowReaction {
 				return false;
 			}
 		} catch {
+			return false;
+		}
+
+		if (challenge.reaction !== this.reaction) {
 			return false;
 		}
 

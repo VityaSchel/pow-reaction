@@ -56,10 +56,10 @@ export class Grinder {
 
 export async function spawnPowSolveWorker({
 	challenge: payload,
-	onProgress
+	onprogress
 }: {
 	challenge: string;
-	onProgress?: (progress: number) => void;
+	onprogress?: (progress: number) => void;
 }) {
 	const { difficulty, rounds, expiresAt } = decodeJWT(payload) as PowReactionChallenge;
 	const solutions: number[] = [];
@@ -101,7 +101,7 @@ export async function spawnPowSolveWorker({
 
 		const batchSolutions = await Promise.all(batchPromises);
 		solutions.push(...batchSolutions);
-		onProgress?.(solutions.length / rounds.length);
+		onprogress?.(solutions.length / rounds.length);
 	}
 	return solutions;
 }

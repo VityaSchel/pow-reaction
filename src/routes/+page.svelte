@@ -1,67 +1,29 @@
 <script lang="ts">
-	import { Grinder, spawnPowSolveWorker } from '$lib/pow-solve.js';
-	import { onMount } from 'svelte';
+	import ReactionButton from '$lib/ReactionButton.svelte';
+	import z from 'zod';
 
 	let { data } = $props();
-
-	const challenge = $derived(data.challenge);
-
-	let uiUpdates: boolean | null = $state(null);
-	let status: 'pending' | 'solved' = $state('pending');
-	let progress: number = $state(0);
-	let solvedIn: number | null = $state(null);
-
-	$effect(() => {
-		status = 'pending';
-		solvedIn = null;
-		const start = Date.now();
-		spawnPowSolveWorker({
-			challenge,
-			onProgress: (p) => {
-				progress = Math.round(p * 100);
-			}
-		}).then((solutions) => {
-			status = 'solved';
-			solvedIn = Date.now() - start;
-			fetch('/api/verify', {
-				method: 'POST',
-				headers: { 'Content-Type': 'application/json' },
-				body: JSON.stringify({ solutions, challenge })
-			})
-				.then((res) => res.json())
-				.then((data) => {
-					console.log('Verification result:', data);
-				});
-		});
-	});
-
-	onMount(() => {
-		const interval = setInterval(() => {
-			uiUpdates = !uiUpdates;
-		}, 10);
-		return () => clearInterval(interval);
-	});
 </script>
 
-<div class="p-8">
-	<p class="break-all">
-		Progress: {progress}%
-	</p>
-	<p>
-		{status}
-	</p>
-	<p>
-		{#if solvedIn !== null}
-			Solved in {solvedIn}ms
-		{/if}
-	</p>
-	{#if uiUpdates !== null}
-		{#if uiUpdates}
-			<span>O</span>
-		{:else}
-			<span>X</span>
-		{/if}
-	{:else}
-		<span>Loading...</span>
-	{/if}
+<div class="flex items-center justify-center h-screen">
+	<ReactionButton
+		reaction="👍"
+		onclick={async () => {
+			const req = await fetch('/api/reactions/challenge', { method: 'POST' });
+			if (!req.ok) throw new Error('Failed to get challenge');
+			const res = await req.json();
+			z.object({ challenge: z.string() }).parse(res);
+			return { challenge: res.challenge };
+		}}
+		onreact={async ({ challenge, solutions }) => {
+			const req = await fetch('/api/reactions', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json' },
+				body: JSON.stringify({ challenge, solutions })
+			});
+			if (!req.ok) throw new Error('Failed to add reaction');
+			const res = await req.json();
+			z.object({ success: z.literal(true) }).parse(res);
+		}}
+	/>
 </div>

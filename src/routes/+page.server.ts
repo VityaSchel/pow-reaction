@@ -1,4 +1,4 @@
-import { postReactions } from './post.svelte.server.js';
+import { postReactions } from './mockdb.svelte.server.js';
 
 export function load({ depends }) {
 	depends('post:reactions');

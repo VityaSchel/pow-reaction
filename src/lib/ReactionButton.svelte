@@ -39,7 +39,7 @@
 			disabled={clicked}
 			onclick={async () => {
 				if (clicked) return;
-				progress.set(0, {
+				progress.set(0.1, {
 					instant: true
 				});
 				clicked = true;
@@ -47,7 +47,7 @@
 					const { challenge } = await onclick();
 					const solutions = await spawnPowSolveWorker({
 						challenge,
-						onprogress: (p) => progress.set(p)
+						onprogress: (p) => progress.set(0.1 + p * 0.9)
 					});
 					await Promise.all([
 						onreact({ challenge, solutions }),

@@ -2,7 +2,7 @@ import z from 'zod';
 import { json } from '@sveltejs/kit';
 import { powReactions } from '../../reactions.server.js';
 import { reactions } from '../../reactions.js';
-import { postReactions } from '../../post.svelte.server.js';
+import { postReactions } from '../../mockdb.svelte.server.js';
 
 export async function POST({ request }) {
 	const body = await z

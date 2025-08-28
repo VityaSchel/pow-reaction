@@ -14,6 +14,6 @@ export async function POST({ request }) {
 		return json({ success: false }, { status: 400 });
 	}
 
-	const challenge = powReactions[body.data.reaction].getChallenge({ ip: '1.2.3.4' });
+	const challenge = await powReactions[body.data.reaction].getChallenge({ ip: '1.2.3.4' });
 	return json({ challenge });
 }

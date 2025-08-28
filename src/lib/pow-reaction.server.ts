@@ -7,32 +7,44 @@ import {
 } from '$lib/pow-reaction-challenge.js';
 import { countLeadingZeroBits } from '$lib/utils.js';
 
+type Difficulty = {
+	windowMs: number;
+	multiplier: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+	getEntries: ({ ip, since }: { ip: string; since: Date }) => Promise<number>;
+	putEntry: ({ ip }: { ip: string }) => void;
+};
+
 export class PowReaction {
 	secret: Uint8Array;
 	reaction: string;
-	difficultyMultiplier: number;
+	difficulty: Difficulty;
 	ttl: number;
 
 	constructor({
 		secret,
 		reaction,
-		difficultyMultiplier,
-		ttl
+		ttl,
+		difficulty
 	}: {
 		secret: Uint8Array;
 		reaction: string;
-		difficultyMultiplier: number;
 		ttl?: number;
+		difficulty: Difficulty;
 	}) {
 		this.secret = secret;
 		this.reaction = reaction;
-		this.difficultyMultiplier = difficultyMultiplier;
 		this.ttl = ttl ?? 1000 * 60;
+		this.difficulty = difficulty;
 	}
 
-	getChallengeParams({ ip }: { ip?: string }) {
-		// todo: progressive difficulty based on ip
-		return { difficulty: 4, rounds: 50 };
+	async getChallengeParams({ ip }: { ip: string }) {
+		const entries = await this.difficulty.getEntries({
+			ip,
+			since: new Date(Date.now() - this.difficulty.windowMs)
+		});
+		const minDifficulty = 4;
+		const difficulty = minDifficulty + Math.floor(entries / (5 / this.difficulty.multiplier));
+		return { difficulty, rounds: 50 };
 	}
 
 	generateChallenge({
@@ -40,7 +52,7 @@ export class PowReaction {
 		difficulty,
 		rounds: roundsNumber
 	}: {
-		ip?: string;
+		ip: string;
 		difficulty: number;
 		rounds: number;
 	}) {
@@ -67,8 +79,9 @@ export class PowReaction {
 		return payload;
 	}
 
-	getChallenge({ ip }: { ip?: string }) {
-		const { difficulty, rounds } = this.getChallengeParams({ ip });
+	async getChallenge({ ip }: { ip: string }) {
+		const { difficulty, rounds } = await this.getChallengeParams({ ip });
+		this.difficulty.putEntry({ ip });
 		return this.generateChallenge({ ip, difficulty, rounds });
 	}
 
@@ -81,7 +94,7 @@ export class PowReaction {
 			solutions: number[];
 		},
 		request: {
-			ip?: string;
+			ip: string;
 		}
 	) {
 		let challenge: PowReactionChallenge;
@@ -98,7 +111,7 @@ export class PowReaction {
 			return false;
 		}
 
-		if (request.ip !== undefined && request.ip !== challenge.ip) {
+		if (!request.ip || request.ip !== challenge.ip) {
 			return false;
 		}
 

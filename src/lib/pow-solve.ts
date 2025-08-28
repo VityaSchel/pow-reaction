@@ -1,9 +1,23 @@
-import z from 'zod';
-import { sha256 } from '@noble/hashes/sha2';
-import { utf8ToBytes } from '@noble/hashes/utils';
-import { decodeJWT } from '@oslojs/jwt';
 import { countLeadingZeroBits } from '$lib/utils.js';
-import { powReactionChallengeSchema } from '$lib/pow-reaction-challenge.js';
+import type { PowReactionChallenge } from '$lib/pow-reaction-challenge.js';
+
+function decodeJWT(token: string): object | null {
+	let output = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');
+	switch (output.length % 4) {
+		case 0:
+			break;
+		case 2:
+			output += '==';
+			break;
+		case 3:
+			output += '=';
+			break;
+		default:
+			throw new Error('Illegal base64url string');
+	}
+	const result = window.atob(output);
+	return JSON.parse(decodeURIComponent(escape(result)));
+}
 
 export class Grinder {
 	id: string;
@@ -24,12 +38,13 @@ export class Grinder {
 		this.onSuccess = onSuccess;
 	}
 
-	start() {
+	async start() {
+		const encoder = new TextEncoder();
 		let nonce = 0;
 		while (true) {
 			const candidate = `${this.id}.${nonce}`;
-			const h = sha256(utf8ToBytes(candidate));
-			const lz = countLeadingZeroBits(h);
+			const h = await self.crypto.subtle.digest('SHA-256', encoder.encode(candidate));
+			const lz = countLeadingZeroBits(new Uint8Array(h));
 			if (lz >= this.difficulty) {
 				this.onSuccess(nonce);
 				break;
@@ -46,7 +61,7 @@ export async function spawnPowSolveWorker({
 	challenge: string;
 	onProgress?: (progress: number) => void;
 }) {
-	const { difficulty, rounds, expiresAt } = powReactionChallengeSchema.parse(decodeJWT(payload));
+	const { difficulty, rounds, expiresAt } = decodeJWT(payload) as PowReactionChallenge;
 	const solutions: number[] = [];
 	const batchSize = navigator.hardwareConcurrency || 1;
 
@@ -57,7 +72,7 @@ export async function spawnPowSolveWorker({
 			return new Promise<number>((resolve, reject) => {
 				const worker = new Worker(new URL('./pow-solve-worker.ts', import.meta.url).href, {
 					type: 'module',
-					preload: ['zod']
+					preload: ['$lib/pow-solve.js']
 				});
 
 				worker.onerror = (error) => {
@@ -70,11 +85,11 @@ export async function spawnPowSolveWorker({
 				}, expiresAt - Date.now());
 
 				worker.onmessage = (event) => {
-					const payload = z.number().safeParse(event.data);
-					if (payload.success) {
+					const solution = event.data;
+					if (typeof solution === 'number' && Number.isSafeInteger(solution) && solution >= 0) {
 						clearTimeout(timeout);
 						worker.terminate();
-						resolve(payload.data);
+						resolve(solution);
 					} else {
 						reject(new Error('Invalid message from worker'));
 					}

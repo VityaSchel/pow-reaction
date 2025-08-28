@@ -9,6 +9,7 @@
 	<ReactionButton
 		reaction="👍"
 		onclick={async () => {
+			console.time('challenge');
 			const req = await fetch('/api/reactions/challenge', { method: 'POST' });
 			if (!req.ok) throw new Error('Failed to get challenge');
 			const res = await req.json();
@@ -16,6 +17,7 @@
 			return { challenge: res.challenge };
 		}}
 		onreact={async ({ challenge, solutions }) => {
+			console.timeEnd("challenge")
 			const req = await fetch('/api/reactions', {
 				method: 'POST',
 				headers: { 'Content-Type': 'application/json' },

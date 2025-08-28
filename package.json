@@ -60,7 +60,6 @@
 	],
 	"dependencies": {
 		"@noble/hashes": "^2.0.0",
-		"@oslojs/jwt": "^0.3.0",
 		"jsonwebtoken": "^9.0.2",
 		"zod": "^4.0.0"
 	}

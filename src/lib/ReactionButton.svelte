@@ -33,7 +33,7 @@
 			class={[
 				'rounded-full transition-colors focus:outline-0 inline-block text-2xl w-10 h-10 cursor-pointer relative z-[1] disabled:cursor-progress',
 				{
-					'hover:bg-black/10 focus-visible:bg-black/10 dark:hover:bg-neutral-500/10 dark:focus-visible:bg-neutral-500/10':
+					'hover:bg-black/10 focus-visible:bg-black/10 dark:hover:bg-neutral-400/30 dark:focus-visible:bg-neutral-400/30':
 						!clicked
 				}
 			]}
@@ -63,7 +63,7 @@
 		</button>
 		<div
 			class={[
-				'progress absolute top-0 left-0 w-full h-full rounded-full transition-opacity duration-200 from-black/10 dark:from-neutral-500/10',
+				'progress absolute top-0 left-0 w-full h-full rounded-full transition-opacity duration-200 from-black/10 dark:from-neutral-400/30',
 				{
 					'opacity-100 ': clicked,
 					'opacity-0': !clicked

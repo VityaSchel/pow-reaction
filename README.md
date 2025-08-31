@@ -7,6 +7,12 @@
 
 proof-of-work reactions for your Svelte blogs
 
+<picture>
+  <source media="(prefers-color-scheme: dark)" srcset="docs/dark-demo.gif">
+  <source media="(prefers-color-scheme: light)" srcset="docs/light-demo.gif">
+  <img alt="Demo gif" src="docs/light-demo.gif">
+</picture>
+
 demo: [pow-reaction.pages.dev](https://pow-reaction.pages.dev)
 
 see in action: [blog.hloth.dev](https://blog.hloth.dev)

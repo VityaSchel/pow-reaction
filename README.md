@@ -26,3 +26,11 @@ Couple of qurks:
   - web workers run in a separate thread = no UI freezes
   - several web workers = several times faster to find all solutions
   - use `navigator.hardwareConcurrency` which is supported by every browser
+
+## License
+
+[MIT](./LICENSE)
+
+## Donate
+
+[hloth.dev/donate](https://hloth.dev/donate)

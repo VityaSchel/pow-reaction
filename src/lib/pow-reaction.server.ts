@@ -86,7 +86,7 @@ export class PowReaction {
 
 	async getChallenge({ ip }: { ip: string }) {
 		const { difficulty, rounds } = await this.getChallengeParams({ ip });
-		this.difficulty.putEntry({ ip });
+		await this.difficulty.putEntry({ ip });
 		return this.generateChallenge({ ip, difficulty, rounds });
 	}
 

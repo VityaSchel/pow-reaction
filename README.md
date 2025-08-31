@@ -174,7 +174,7 @@ export async function POST({ request }) {
 	// get from headers or event.getClientAddress(), see https://github.com/sveltejs/kit/pull/4289
 	const ip = '1.2.3.4';
 
-	const success = reaction.verifySolution({ challenge, solutions }, { ip });
+	const success = await reaction.verifySolution({ challenge, solutions }, { ip });
 	if (success) {
 		// increase number of reactions by +1 in your database
 	}

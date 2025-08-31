@@ -27,7 +27,7 @@ export async function POST({ request, platform, getClientAddress }) {
 		throw new Error('Cloudflare KV is not available');
 	}
 	const powReaction = powReactions({ platform })[body.data.reaction];
-	const success = powReaction.verifySolution({ challenge, solutions }, { ip });
+	const success = await powReaction.verifySolution({ challenge, solutions }, { ip });
 	if (success) {
 		const db = new CloudflareKvDb(platform.env.pow_reaction_demo);
 		await db.increaseReactions(body.data.reaction);

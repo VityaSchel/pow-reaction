@@ -72,7 +72,7 @@ export class PowReaction {
 			rounds
 		};
 
-		return jwt.sign(challenge, this.secret, { algorithm: 'ES256' });
+		return jwt.sign(challenge, this.secret);
 	}
 
 	async getChallenge({ ip }: { ip: string }) {

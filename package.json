@@ -79,7 +79,6 @@
 		"wrangler": "^4.33.1"
 	},
 	"dependencies": {
-		"@noble/curves": "1.9.6",
 		"@noble/hashes": "^2.0.0",
 		"@oslojs/jwt": "^0.3.0",
 		"zod": "^4.0.0"

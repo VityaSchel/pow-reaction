@@ -44,7 +44,7 @@ export class CloudflareKvDb {
 
 	async isRedeemed(id: string) {
 		const value = await this.db.get(`redeemed:demo_page:${id}`);
-		return value === '1';
+		return value !== null;
 	}
 
 	async setRedeemed(id: string) {

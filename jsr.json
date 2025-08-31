@@ -1,6 +1,6 @@
 {
   "name": "@hloth/pow-reaction",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "license": "MIT",
-  "exports": "./lib/index.ts"
+  "exports": "./src/lib/index.ts"
 }

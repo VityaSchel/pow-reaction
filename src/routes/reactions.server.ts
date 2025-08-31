@@ -8,7 +8,7 @@ export const powReactions = ({ platform }: { platform: App.Platform }) => {
 		reactions.map((emoji) => [
 			emoji,
 			new PowReaction({
-				secret: new TextEncoder().encode('HESOYAM_HESOYAM_HESOYAM_HESOYAM!'),
+				secret: new TextEncoder().encode(platform.env.JWT_SECRET),
 				reaction: emoji,
 				difficulty: {
 					windowMs: 1000 * 60 * 60 * 24,

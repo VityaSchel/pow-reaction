@@ -1,5 +1,5 @@
-import { countLeadingZeroBits } from '$lib/utils.js';
-import type { PowReactionChallenge } from '$lib/pow-reaction-challenge.js';
+import { countLeadingZeroBits } from './utils.js';
+import type { PowReactionChallenge } from './pow-reaction-challenge.js';
 
 function decodeJWT(token: string): object | null {
 	let output = token.split('.')[1].replace(/-/g, '+').replace(/_/g, '/');

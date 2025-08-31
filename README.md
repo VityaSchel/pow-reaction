@@ -1,9 +1,10 @@
 # pow-reaction
 
 [![GitHub License](https://img.shields.io/github/license/VityaSchel/pow-reaction)](https://github.com/VityaSchel/pow-reaction/blob/main/LICENSE)
-[![JSR](https://jsr.io/badges/@hloth/pow-reaction)](https://jsr.io/@hloth/pow-reaction)
 [![NPM Version](https://img.shields.io/npm/v/pow-reaction)](https://www.npmjs.com/package/pow-reaction)
 [![NPM Unpacked Size](https://img.shields.io/npm/unpacked-size/pow-reaction)](https://www.npmjs.com/package/pow-reaction)
+
+<!-- [![JSR](https://jsr.io/badges/@hloth/pow-reaction)](https://jsr.io/@hloth/pow-reaction) -->
 
 proof-of-work reactions for your Svelte blogs
 
@@ -15,7 +16,7 @@ proof-of-work reactions for your Svelte blogs
 
 demo: [pow-reaction.pages.dev](https://pow-reaction.pages.dev)
 
-see in action: [blog.hloth.dev](https://blog.hloth.dev)
+<!-- see in action: [blog.hloth.dev](https://blog.hloth.dev) -->
 
 ## How POW captcha works
 
@@ -48,11 +49,13 @@ NPM:
 bun add pow-reaction
 ```
 
-JSR:
+<!-- JSR:
 
 ```
 bunx jsr add @hloth/pow-reaction
-```
+``` -->
+
+JSR is blocked (see #1)
 
 In your Svelte UI component (client-side):
 
@@ -89,6 +92,7 @@ In your Svelte UI component (client-side):
 	}
 </script>
 
+<!-- Optionally pass i18n={{ reactButton: {{ loading: 'Loading...', reactWith: 'React with', jsRequired: 'JavaScript is required in order to add reactions' }} }} to translate strings -->
 <ReactionButton reaction={emoji} value={data.reactions[emoji]} {onclick} {onreact} />
 ```
 

@@ -2,9 +2,9 @@ import z from 'zod';
 import { json } from '@sveltejs/kit';
 import { powReactions } from '../../reactions.server.js';
 import { reactions } from '../../reactions.js';
-import { postReactions } from '../../mockdb.svelte.server.js';
+import { CfKvDb } from '../../demo-db.server.js';
 
-export async function POST({ request }) {
+export async function POST({ request, platform, getClientAddress }) {
 	const body = await z
 		.object({
 			challenge: z.string().min(1),
@@ -18,10 +18,21 @@ export async function POST({ request }) {
 	}
 	const { challenge, solutions } = body.data;
 
-	const success = powReactions[body.data.reaction].verifySolution(
+	const ip = getClientAddress();
+	if (!ip) {
+		return json({ success: false }, { status: 403 });
+	}
+
+	if (!platform) {
+		throw new Error('Cloudflare KV is not available');
+	}
+	const success = powReactions({ platform })[body.data.reaction].verifySolution(
 		{ challenge, solutions },
-		{ ip: '1.2.3.4' }
+		{ ip }
 	);
-	if (success) postReactions[body.data.reaction] += 1;
+	if (success) {
+		const db = new CfKvDb(platform.env.pow_reaction_demo);
+		await db.increaseReactions(body.data.reaction);
+	}
 	return json({ success });
 }

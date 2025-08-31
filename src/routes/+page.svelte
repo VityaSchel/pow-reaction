@@ -1,8 +1,8 @@
 <script lang="ts">
-	import ReactionButton from '$lib/ReactionButton.svelte';
 	import z from 'zod';
 	import { reactions } from './reactions.js';
 	import { invalidate } from '$app/navigation';
+	import ReactionButton from '$lib/ReactionButton.svelte';
 
 	let { data } = $props();
 </script>
@@ -19,9 +19,7 @@
 					body: JSON.stringify({ reaction: emoji })
 				});
 				if (!req.ok) throw new Error('Failed to get challenge');
-				const res = await req.json();
-				z.object({ challenge: z.string() }).parse(res);
-				return { challenge: res.challenge };
+				return z.object({ challenge: z.string() }).parse(await req.json());
 			}}
 			onreact={async ({ challenge, solutions }) => {
 				const req = await fetch('/api/reactions', {
@@ -30,8 +28,7 @@
 					body: JSON.stringify({ challenge, solutions, reaction: emoji })
 				});
 				if (!req.ok) throw new Error('Failed to add reaction');
-				const res = await req.json();
-				z.object({ success: z.literal(true) }).parse(res);
+				z.object({ success: z.literal(true) }).parse(await req.json());
 				invalidate('post:reactions');
 			}}
 		/>

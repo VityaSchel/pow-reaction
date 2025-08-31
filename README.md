@@ -2,6 +2,8 @@
 
 proof-of-work reactions for your blogs
 
+demo: [pow-reaction.pages.dev](https://pow-reaction.pages.dev)
+
 see in action: [blog.hloth.dev](https://blog.hloth.dev)
 
 ## How POW captcha works
@@ -26,6 +28,159 @@ Couple of qurks:
   - web workers run in a separate thread = no UI freezes
   - several web workers = several times faster to find all solutions
   - use `navigator.hardwareConcurrency` which is supported by every browser
+
+## Install
+
+NPM:
+
+```
+bun add pow-reaction
+```
+
+JSR:
+
+```
+bunx jsr add @hloth/pow-reaction
+```
+
+In your Svelte UI component (client-side):
+
+```svelte
+<script>
+	import z from 'zod';
+	import ReactionButton from 'pow-reaction';
+	import { invalidate } from '$app/navigation';
+
+	let { data } = $props();
+
+	const emoji = '😘';
+
+	async function onclick() {
+		const req = await fetch('/api/reactions/challenge', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ reaction: emoji })
+		});
+		if (!req.ok) throw new Error('Failed to get challenge');
+		return z.object({ challenge: z.string() }).parse(await req.json());
+	}
+
+	async function onreact({ challenge, solutions }) {
+		const req = await fetch('/api/reactions', {
+			method: 'POST',
+			headers: { 'Content-Type': 'application/json' },
+			body: JSON.stringify({ challenge, solutions, reaction: emoji })
+		});
+		if (!req.ok) throw new Error('Failed to add reaction');
+		z.object({ success: z.literal(true) }).parse(await req.json());
+
+		invalidate('post:reactions');
+	}
+</script>
+
+<ReactionButton reaction={emoji} value={data.reactions[emoji]} {onclick} {onreact} />
+```
+
+In your server side initialize PowReaction class (`lib/server/reactions.ts`):
+
+```ts
+import { PowReaction } from 'pow-reaction';
+
+// load from process.env or something
+const secret = new TextEncoder().encode('HESOYAM');
+
+export const reaction = new PowReaction({
+	// secret is used to cryptographically sign challenge
+	secret,
+	// reaction can be any string, emoji or enum value
+	reaction: '😘',
+	difficulty: {
+		// how many ms (1/1000 of a second) should be checked when generating a challenge
+		windowMs: 1000 * 60,
+		// steepness of curve increasing challenge (1-10), where 5 is 1 more zero byte for each challenge
+		multiplier: 5,
+		//
+		async getEntries({ ip, since }) {
+			// return number of entries in your persistant storage
+			// an IP address `ip` has been added to it
+			// starting from `since` Date
+		},
+		async putEntry({ ip }) {
+			// put an IP address `ip` to your persistant storage
+			// and assign current date `new Date()` to the entry
+		}
+	},
+	// how long should a signed challenge be valid
+	ttl: 1000 * 60
+	// this is mainly to prevent bots from requesting a lot of challenges
+	// in advance, easily solving, and then submitting in batch.
+	// too small values will cause low-end devices not to be able
+	// to submit solutions within this time frame
+});
+```
+
+In your server challenge generator API handler (`POST /api/reactions/challenge`):
+
+```ts
+import z from 'zod';
+import { json } from '@sveltejs/kit';
+import { reaction } from '$lib/server/reactions';
+
+export async function POST({ request }) {
+	const body = await z
+		.object({
+			reaction: z.literal('😘')
+		})
+		.safeParseAsync(await request.json());
+
+	if (!body.success) {
+		return json({ success: false }, { status: 400 });
+	}
+
+	// get from headers or event.getClientAddress(), see https://github.com/sveltejs/kit/pull/4289
+	const ip = '1.2.3.4';
+	const challenge = await reaction.getChallenge({ ip });
+	return json({ challenge });
+}
+```
+
+In your server solution submitter API handler (`POST /api/reactions`):
+
+```ts
+import z from 'zod';
+import { json } from '@sveltejs/kit';
+import { reaction } from '$lib/server/reactions';
+
+export async function POST({ request }) {
+	const body = await z
+		.object({
+			reaction: z.literal('😘'),
+			challenge: z.string().min(1),
+			solutions: z.array(z.number().int().nonnegative())
+		})
+		.safeParseAsync(await request.json());
+
+	if (!body.success) {
+		return json({ success: false }, { status: 400 });
+	}
+	const { challenge, solutions } = body.data;
+
+	// get from headers or event.getClientAddress(), see https://github.com/sveltejs/kit/pull/4289
+	const ip = '1.2.3.4';
+
+	const success = reaction.verifySolution({ challenge, solutions }, { ip });
+	if (success) {
+		// increase number of reactions by +1 in your database
+	}
+	return json({ success });
+}
+```
+
+## Demo
+
+You can find example & demo source code in [src/routes](./src/routes/) directory.
+
+[Demo](https://pow-reaction.pages.dev) works with Cloudflare Pages and Cloudflare KV for IP rate limiting.
 
 ## License
 

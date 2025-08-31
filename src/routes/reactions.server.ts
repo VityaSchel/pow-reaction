@@ -8,10 +8,10 @@ export const powReactions = ({ platform }: { platform: App.Platform }) => {
 		reactions.map((emoji) => [
 			emoji,
 			new PowReaction({
-				secret: crypto.getRandomValues(new Uint8Array(32)),
+				secret: new TextEncoder().encode('HESOYAM_HESOYAM_HESOYAM_HESOYAM!'),
 				reaction: emoji,
 				difficulty: {
-					windowMs: 1000 * 60,
+					windowMs: 1000 * 60 * 60 * 24,
 					multiplier: 5,
 					async getEntries({ ip, since }) {
 						const minTime = since.getTime();

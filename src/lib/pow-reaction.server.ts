@@ -1,4 +1,4 @@
-import jwt from 'jsonwebtoken';
+import * as jwt from './jwt.server';
 import { sha256 } from '@noble/hashes/sha2';
 import { utf8ToBytes, bytesToHex, randomBytes } from '@noble/hashes/utils';
 import {
@@ -67,16 +67,12 @@ export class PowReaction {
 		const challenge: PowReactionChallenge = {
 			reaction: this.reaction,
 			difficulty,
-			expiresAt,
+			exp: Math.floor(expiresAt / 1000),
 			ip,
 			rounds
 		};
 
-		const payload = jwt.sign(challenge, bytesToHex(this.secret), {
-			algorithm: 'HS256'
-		});
-
-		return payload;
+		return jwt.sign(challenge, this.secret);
 	}
 
 	async getChallenge({ ip }: { ip: string }) {
@@ -99,11 +95,9 @@ export class PowReaction {
 	) {
 		let challenge: PowReactionChallenge;
 		try {
-			challenge = powReactionChallengeSchema.parse(jwt.verify(payload, bytesToHex(this.secret)));
-			if (Date.now() > challenge.expiresAt) {
-				return false;
-			}
-		} catch {
+			challenge = powReactionChallengeSchema.parse(jwt.verify(payload, this.secret));
+		} catch (e) {
+			console.error(e);
 			return false;
 		}
 

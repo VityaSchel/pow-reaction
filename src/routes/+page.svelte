@@ -7,33 +7,45 @@
 	let { data } = $props();
 </script>
 
-<div class="flex items-center justify-center h-screen gap-1">
-	{#snippet Reaction(emoji: string)}
-		<ReactionButton
-			reaction={emoji}
-			value={data.postReactions[emoji] ?? 0}
-			onclick={async () => {
-				const req = await fetch('/api/reactions/challenge', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ reaction: emoji })
-				});
-				if (!req.ok) throw new Error('Failed to get challenge');
-				return z.object({ challenge: z.string() }).parse(await req.json());
-			}}
-			onreact={async ({ challenge, solutions }) => {
-				const req = await fetch('/api/reactions', {
-					method: 'POST',
-					headers: { 'Content-Type': 'application/json' },
-					body: JSON.stringify({ challenge, solutions, reaction: emoji })
-				});
-				if (!req.ok) throw new Error('Failed to add reaction');
-				z.object({ success: z.literal(true) }).parse(await req.json());
-				invalidate('post:reactions');
-			}}
-		/>
-	{/snippet}
-	{#each reactions as emoji}
-		{@render Reaction(emoji)}
-	{/each}
+<div
+	class="h-screen flex items-center justify-center flex-col gap-4 bg-white dark:bg-neutral-900 text-black dark:text-white"
+>
+	<div class="flex items-center justify-center gap-1">
+		{#snippet Reaction(emoji: string)}
+			<ReactionButton
+				reaction={emoji}
+				value={data.postReactions[emoji] ?? 0}
+				onclick={async () => {
+					const req = await fetch('/api/reactions/challenge', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ reaction: emoji })
+					});
+					if (!req.ok) throw new Error('Failed to get challenge');
+					return z.object({ challenge: z.string() }).parse(await req.json());
+				}}
+				onreact={async ({ challenge, solutions }) => {
+					const req = await fetch('/api/reactions', {
+						method: 'POST',
+						headers: { 'Content-Type': 'application/json' },
+						body: JSON.stringify({ challenge, solutions, reaction: emoji })
+					});
+					if (!req.ok) throw new Error('Failed to add reaction');
+					z.object({ success: z.literal(true) }).parse(await req.json());
+					invalidate('post:reactions');
+				}}
+			/>
+		{/snippet}
+		{#each reactions as emoji}
+			{@render Reaction(emoji)}
+		{/each}
+	</div>
+	<span class="text-sm text-neutral-700 dark:text-neutral-300">try clicking on these</span>
+	<span class="text-xs text-neutral-400 dark:text-neutral-700">
+		<a href="https://github.com/VityaSchel/pow-reaction" target="_blank" rel="noopener noreferrer">
+			source
+		</a>
+		by
+		<a href="https://hloth.dev" target="_blank" rel="noopener noreferrer">hloth</a>
+	</span>
 </div>

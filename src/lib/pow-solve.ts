@@ -61,7 +61,7 @@ export async function spawnPowSolveWorker({
 	challenge: string;
 	onprogress?: (progress: number) => void;
 }) {
-	const { difficulty, rounds, expiresAt } = decodeJWT(payload) as PowReactionChallenge;
+	const { difficulty, rounds, exp } = decodeJWT(payload) as PowReactionChallenge;
 	const solutions: number[] = [];
 	const batchSize = navigator.hardwareConcurrency || 1;
 
@@ -71,18 +71,21 @@ export async function spawnPowSolveWorker({
 		const batchPromises = batch.map((round) => {
 			return new Promise<number>((resolve, reject) => {
 				const worker = new Worker(new URL('./pow-solve-worker.ts', import.meta.url).href, {
-					type: 'module',
-					preload: ['$lib/pow-solve.js']
+					type: 'module'
+					// preload: ['$lib/pow-solve.js']
 				});
 
 				worker.onerror = (error) => {
 					reject(error);
 				};
 
-				const timeout = setTimeout(() => {
-					worker.terminate();
-					reject(new Error('Challenge expired'));
-				}, expiresAt - Date.now());
+				const timeout = setTimeout(
+					() => {
+						worker.terminate();
+						reject(new Error('Challenge expired'));
+					},
+					exp * 1000 - Date.now()
+				);
 
 				worker.onmessage = (event) => {
 					const solution = event.data;

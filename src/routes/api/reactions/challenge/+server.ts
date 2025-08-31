@@ -22,6 +22,7 @@ export async function POST({ request, platform, getClientAddress }) {
 	if (!platform) {
 		throw new Error('Cloudflare KV is not available');
 	}
-	const challenge = await powReactions({ platform })[body.data.reaction].getChallenge({ ip });
+	const powReaction = powReactions({ platform })[body.data.reaction];
+	const challenge = await powReaction.getChallenge({ ip });
 	return json({ challenge });
 }

@@ -86,8 +86,8 @@ In your server side initialize PowReaction class (`lib/server/reactions.ts`):
 ```ts
 import { PowReaction } from 'pow-reaction';
 
-// load from process.env or something
-const secret = new TextEncoder().encode('HESOYAM');
+// load from process.env or something, it should be 32 bytes long
+const secret = new TextEncoder().encode('HESOYAM_HESOYAM_HESOYAM_HESOYAM!');
 
 export const reaction = new PowReaction({
 	// secret is used to cryptographically sign challenge
@@ -181,6 +181,12 @@ export async function POST({ request }) {
 You can find example & demo source code in [src/routes](./src/routes/) directory.
 
 [Demo](https://pow-reaction.pages.dev) works with Cloudflare Pages and Cloudflare KV for IP rate limiting.
+
+## Credits
+
+Thanks to [Paul Miller](https://github.com/paulmillr) for the amazing [noble](https://paulmillr.com/noble/) project!
+
+And thanks to [Pilcrow](https://github.com/pilcrowOnPaper) for the awesome [Oslo](https://oslojs.dev/) project!
 
 ## License
 

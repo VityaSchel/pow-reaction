@@ -1,6 +1,11 @@
 # pow-reaction
 
-proof-of-work reactions for your blogs
+[![GitHub License](https://img.shields.io/github/license/VityaSchel/pow-reaction)](https://github.com/VityaSchel/pow-reaction/blob/main/LICENSE)
+[![JSR](https://jsr.io/badges/@hloth/pow-reaction)](https://jsr.io/@hloth/pow-reaction)
+[![NPM Version](https://img.shields.io/npm/v/pow-reaction)](https://www.npmjs.com/package/pow-reaction)
+[![NPM Unpacked Size](https://img.shields.io/npm/unpacked-size/pow-reaction)](https://www.npmjs.com/package/pow-reaction)
+
+proof-of-work reactions for your Svelte blogs
 
 demo: [pow-reaction.pages.dev](https://pow-reaction.pages.dev)
 

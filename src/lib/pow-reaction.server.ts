@@ -1,11 +1,8 @@
 import * as jwt from './jwt.server';
 import { sha256 } from '@noble/hashes/sha2';
 import { utf8ToBytes, bytesToHex, randomBytes } from '@noble/hashes/utils';
-import {
-	powReactionChallengeSchema,
-	type PowReactionChallenge
-} from '$lib/pow-reaction-challenge.js';
-import { countLeadingZeroBits } from '$lib/utils.js';
+import { powReactionChallengeSchema, type PowReactionChallenge } from './pow-reaction-challenge.js';
+import { countLeadingZeroBits } from './utils.js';
 
 type Difficulty = {
 	windowMs: number;

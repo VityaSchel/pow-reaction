@@ -97,8 +97,8 @@ export const reaction = new PowReaction({
 	difficulty: {
 		// how many ms (1/1000 of a second) should be checked when generating a challenge
 		windowMs: 1000 * 60,
-		// steepness of curve increasing challenge (1-10), where 5 is 1 more zero byte for each challenge
-		multiplier: 5,
+		// floor(challenges generated in last `windowMs` * `multiplier`) = number of leading zero bytes in the challenge
+		multiplier: 1,
 		//
 		async getEntries({ ip, since }) {
 			// return number of entries in your persistant storage

@@ -12,7 +12,7 @@ export const powReactions = ({ platform }: { platform: App.Platform }) => {
 				reaction: emoji,
 				difficulty: {
 					windowMs: 1000 * 60 * 60 * 24,
-					multiplier: 5,
+					multiplier: 1,
 					async getEntries({ ip, since }) {
 						const minTime = since.getTime();
 						const entries = await db.getIpEntries({ emoji, ip });

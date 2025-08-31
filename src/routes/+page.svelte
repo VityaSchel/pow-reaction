@@ -40,7 +40,9 @@
 			{@render Reaction(emoji)}
 		{/each}
 	</div>
-	<span class="text-sm text-neutral-700 dark:text-neutral-300">try clicking on these</span>
+	<span class="text-sm text-neutral-700 dark:text-neutral-300">
+		try clicking on these 10-15 times
+	</span>
 	<span class="text-xs text-neutral-400 dark:text-neutral-700">
 		<a href="https://github.com/VityaSchel/pow-reaction" target="_blank" rel="noopener noreferrer">
 			source

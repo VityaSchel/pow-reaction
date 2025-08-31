@@ -9,7 +9,7 @@ import { countLeadingZeroBits } from '$lib/utils.js';
 
 type Difficulty = {
 	windowMs: number;
-	multiplier: 1 | 2 | 3 | 4 | 5 | 6 | 7 | 8 | 9 | 10;
+	multiplier: number;
 	getEntries: ({ ip, since }: { ip: string; since: Date }) => Promise<number>;
 	putEntry: ({ ip }: { ip: string }) => void;
 };
@@ -43,7 +43,7 @@ export class PowReaction {
 			since: new Date(Date.now() - this.difficulty.windowMs)
 		});
 		const minDifficulty = 4;
-		const difficulty = minDifficulty + Math.floor(entries / (5 / this.difficulty.multiplier));
+		const difficulty = minDifficulty + Math.floor(entries * this.difficulty.multiplier);
 		return { difficulty, rounds: 50 };
 	}
 

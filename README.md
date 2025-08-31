@@ -55,7 +55,7 @@ bun add pow-reaction
 bunx jsr add @hloth/pow-reaction
 ``` -->
 
-JSR is blocked (see #1)
+JSR is blocked (see [#1](https://github.com/VityaSchel/pow-reaction/issues/1))
 
 In your Svelte UI component (client-side):
 
@@ -202,6 +202,8 @@ export async function POST({ request }) {
 You can find example & demo source code in [src/routes](./src/routes/) directory.
 
 [Demo](https://pow-reaction.pages.dev) works with Cloudflare Pages and Cloudflare KV for IP rate limiting.
+
+Tested in Firefox 142, Chrome 139, Safari macOS 18.5, Safari iOS 18.0, Tor Browser 14.5.6
 
 ## Credits
 

@@ -2,7 +2,7 @@ import z from 'zod';
 import { json } from '@sveltejs/kit';
 import { powReactions } from '../../reactions.server.js';
 import { reactions } from '../../reactions.js';
-import { CfKvDb } from '../../demo-db.server.js';
+import { CloudflareKvDb } from '../../demo-db.server.js';
 
 export async function POST({ request, platform, getClientAddress }) {
 	const body = await z
@@ -29,7 +29,7 @@ export async function POST({ request, platform, getClientAddress }) {
 	const powReaction = powReactions({ platform })[body.data.reaction];
 	const success = powReaction.verifySolution({ challenge, solutions }, { ip });
 	if (success) {
-		const db = new CfKvDb(platform.env.pow_reaction_demo);
+		const db = new CloudflareKvDb(platform.env.pow_reaction_demo);
 		await db.increaseReactions(body.data.reaction);
 	}
 	return json({ success });

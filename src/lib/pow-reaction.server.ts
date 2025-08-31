@@ -19,22 +19,30 @@ export class PowReaction {
 	reaction: string;
 	difficulty: Difficulty;
 	ttl: number;
+	isRedeemed: (id: string) => Promise<boolean>;
+	setRedeemed: (id: string) => Promise<void>;
 
 	constructor({
 		secret,
 		reaction,
 		ttl,
-		difficulty
+		difficulty,
+		isRedeemed,
+		setRedeemed
 	}: {
 		secret: Uint8Array;
 		reaction: string;
 		ttl?: number;
 		difficulty: Difficulty;
+		isRedeemed: (id: string) => Promise<boolean>;
+		setRedeemed: (id: string) => Promise<void>;
 	}) {
 		this.secret = secret;
 		this.reaction = reaction;
 		this.ttl = ttl ?? 1000 * 60;
 		this.difficulty = difficulty;
+		this.isRedeemed = isRedeemed;
+		this.setRedeemed = setRedeemed;
 	}
 
 	async getChallengeParams({ ip }: { ip: string }) {
@@ -65,6 +73,7 @@ export class PowReaction {
 		}
 
 		const challenge: PowReactionChallenge = {
+			id: crypto.randomUUID(),
 			reaction: this.reaction,
 			difficulty,
 			exp: Math.floor(expiresAt / 1000),
@@ -81,7 +90,7 @@ export class PowReaction {
 		return this.generateChallenge({ ip, difficulty, rounds });
 	}
 
-	verifySolution(
+	async verifySolution(
 		{
 			challenge: payload,
 			solutions
@@ -128,6 +137,12 @@ export class PowReaction {
 				return false;
 			}
 		}
+
+		if (await this.isRedeemed(challenge.id)) {
+			return false;
+		}
+
+		await this.setRedeemed(challenge.id);
 
 		return true;
 	}

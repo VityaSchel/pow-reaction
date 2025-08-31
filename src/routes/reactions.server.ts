@@ -1,9 +1,9 @@
 import { PowReaction } from '$lib/pow-reaction.server';
-import { CfKvDb } from './demo-db.server';
+import { CloudflareKvDb } from './demo-db.server';
 import { reactions } from './reactions';
 
 export const powReactions = ({ platform }: { platform: App.Platform }) => {
-	const db = new CfKvDb(platform.env.pow_reaction_demo);
+	const db = new CloudflareKvDb(platform.env.pow_reaction_demo);
 	return Object.fromEntries(
 		reactions.map((emoji) => [
 			emoji,
@@ -22,7 +22,13 @@ export const powReactions = ({ platform }: { platform: App.Platform }) => {
 						await db.putIpEntry({ emoji, ip });
 					}
 				},
-				ttl: 1000 * 60
+				ttl: 1000 * 60,
+				isRedeemed: async (id: string) => {
+					return db.isRedeemed(id);
+				},
+				setRedeemed: async (id: string) => {
+					await db.setRedeemed(id);
+				}
 			})
 		])
 	);

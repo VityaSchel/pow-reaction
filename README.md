@@ -111,11 +111,17 @@ export const reaction = new PowReaction({
 		}
 	},
 	// how long should a signed challenge be valid
-	ttl: 1000 * 60
 	// this is mainly to prevent bots from requesting a lot of challenges
 	// in advance, easily solving, and then submitting in batch.
 	// too small values will cause low-end devices not to be able
 	// to submit solutions within this time frame
+	ttl: 1000 * 60,
+	async isRedeemed(id) {
+		// return whether the challenge id was submitted previously
+	},
+	async setRedeemed(id) {
+		// put the successfully submitted challenge id
+	}
 });
 ```
 

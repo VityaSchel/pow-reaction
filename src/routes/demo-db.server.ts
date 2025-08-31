@@ -1,4 +1,4 @@
-export class CfKvDb {
+export class CloudflareKvDb {
 	db: KVNamespace<string>;
 
 	constructor(db: KVNamespace<string>) {
@@ -24,5 +24,14 @@ export class CfKvDb {
 	async putIpEntry({ emoji, ip }: { emoji: string; ip: string }) {
 		const key = `entries:demo_page:${emoji}:${ip}:${Date.now()}`;
 		await this.db.put(key, '', { expirationTtl: 60 * 60 * 24 * 7 });
+	}
+
+	async isRedeemed(id: string) {
+		const value = await this.db.get(`redeemed:demo_page:${id}`);
+		return value === '1';
+	}
+
+	async setRedeemed(id: string) {
+		await this.db.put(`redeemed:demo_page:${id}`, '', { expirationTtl: 60 * 60 * 24 });
 	}
 }

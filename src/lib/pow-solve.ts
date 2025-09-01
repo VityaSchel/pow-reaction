@@ -19,9 +19,13 @@ function decodeJWT(token: string): object | null {
 	return JSON.parse(decodeURIComponent(escape(result)));
 }
 
+/** Client-side logic handling challenge solving */
 export class Grinder {
+	/** Challenge ID */
 	id: string;
+	/** Difficulty settings provided in challenge */
 	difficulty: number;
+	/** Callback on successful solution */
 	onSuccess: (solution: number) => void;
 
 	constructor({

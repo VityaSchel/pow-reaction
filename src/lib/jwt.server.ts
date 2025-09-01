@@ -10,7 +10,7 @@ import {
 import { hmac } from '@noble/hashes/hmac';
 import { sha256 } from '@noble/hashes/sha2';
 
-export async function sign(payload: object, secret: Uint8Array) {
+export function sign(payload: object, secret: Uint8Array) {
 	const header = { alg: joseAlgorithmHS256, typ: 'JWT' };
 
 	const headerJSON = JSON.stringify(header);

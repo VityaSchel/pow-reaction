@@ -5,18 +5,29 @@ import { powReactionChallengeSchema, type PowReactionChallenge } from './pow-rea
 import { countLeadingZeroBits } from './utils.js';
 
 type Difficulty = {
+	/** Time window in milliseconds for counting previous entries */
 	windowMs: number;
+	/** Difficulty increase per entry */
 	multiplier: number;
+	/** Function to get number of previous entries from given IP since given time */
 	getEntries: ({ ip, since }: { ip: string; since: Date }) => Promise<number>;
+	/** Function to log a new entry from given IP */
 	putEntry: ({ ip }: { ip: string }) => void;
 };
 
+/** Server-side logic handling challenge generation and verification */
 export class PowReaction {
+	/** Secret used to sign JWTs, should be at least 32 bytes long */
 	secret: Uint8Array;
+	/** Reaction can be any string, such as emoji or enum value */
 	reaction: string;
+	/** Difficulty settings for PoW challenge */
 	difficulty: Difficulty;
+	/** Maximum solving time (Default: 60s) */
 	ttl: number;
+	/** Function to check whether a challenge solution was already submitted */
 	isRedeemed: (id: string) => Promise<boolean>;
+	/** Function to mark a challenge as redeemed */
 	setRedeemed: (id: string) => Promise<void>;
 
 	constructor({
@@ -42,6 +53,7 @@ export class PowReaction {
 		this.setRedeemed = setRedeemed;
 	}
 
+	/** Get challenge parameters based on IP and previous entries */
 	async getChallengeParams({ ip }: { ip: string }): Promise<{
 		difficulty: number;
 		rounds: number;
@@ -55,6 +67,7 @@ export class PowReaction {
 		return { difficulty, rounds: 50 };
 	}
 
+	/** Generate a new challenge for given IP and difficulty */
 	generateChallenge({
 		ip,
 		difficulty,
@@ -63,7 +76,7 @@ export class PowReaction {
 		ip: string;
 		difficulty: number;
 		rounds: number;
-	}): Promise<string> {
+	}): string {
 		const issuedAt = Date.now();
 		const expiresAt = issuedAt + this.ttl;
 
@@ -84,12 +97,14 @@ export class PowReaction {
 		return jwt.sign(challenge, this.secret);
 	}
 
+	/** Get a new challenge for given IP, automatically adjusting difficulty */
 	async getChallenge({ ip }: { ip: string }): Promise<string> {
 		const { difficulty, rounds } = await this.getChallengeParams({ ip });
 		await this.difficulty.putEntry({ ip });
 		return this.generateChallenge({ ip, difficulty, rounds });
 	}
 
+	/** Verify provided solutions for given challenge and request info */
 	async verifySolution(
 		{
 			challenge: payload,

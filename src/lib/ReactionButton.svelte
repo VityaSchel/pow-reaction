@@ -40,9 +40,141 @@
 		stiffness: 0.05,
 		damping: 0.3
 	});
+
+	const valueFormatted = $derived.by(() => {
+		const toFixedFloor = (num: number, digits: number) => {
+			const factor = Math.pow(10, digits);
+			return (Math.floor(num * factor) / factor).toFixed(digits);
+		};
+
+		const units = [
+			'K',
+			'M',
+			'B',
+			'T',
+			'Q',
+			'Qi',
+			'Sx',
+			'Sp',
+			'Oc',
+			'N',
+			'Dc',
+			'Ud',
+			'Dd',
+			'Td',
+			'Qd',
+			'Qid',
+			'Sxd',
+			'Spd',
+			'Od',
+			'Nd',
+			'Vg',
+			'Uvg',
+			'Dvg',
+			'Tvg',
+			'Qvg',
+			'Qivg',
+			'Sxvg',
+			'Spvg',
+			'Ovg',
+			'Nvg',
+			'Tg',
+			'Utg',
+			'Dtg',
+			'Ttg',
+			'Qtg',
+			'Qitg',
+			'Sxtg',
+			'Sptg',
+			'Otg',
+			'Ntg',
+			'Qag',
+			'UQag',
+			'DQag',
+			'TQag',
+			'QQag',
+			'QiQag',
+			'SxQag',
+			'SpQag',
+			'OQag',
+			'NQag',
+			'Qig',
+			'UQig',
+			'DQig',
+			'TQig',
+			'QQig',
+			'QiQig',
+			'SxQig',
+			'SpQig',
+			'OQig',
+			'NQig',
+			'Sxg',
+			'USxg',
+			'DSxg',
+			'TSxg',
+			'QSxg',
+			'QiSxg',
+			'SxSxg',
+			'SpSxg',
+			'OSxg',
+			'NSxg',
+			'Spg',
+			'USpg',
+			'DSpg',
+			'TSpg',
+			'QSpg',
+			'QiSpg',
+			'SxSpg',
+			'SpSpg',
+			'OSpg',
+			'NSpg',
+			'Og',
+			'UOg',
+			'DOg',
+			'TOg',
+			'QOg',
+			'QiOg',
+			'SxOg',
+			'SpOg',
+			'OOg',
+			'NOg',
+			'Ng',
+			'UNg',
+			'DNg',
+			'TNg',
+			'QNg',
+			'QiNg',
+			'SxNg',
+			'SpNg',
+			'ONg',
+			'NNg',
+			'C',
+			'UC'
+		];
+
+		if (value < 1000) {
+			return value.toString();
+		} else if (value === Infinity || Number.isNaN(value) || value < 0 || value % 1 !== 0) {
+			return '∞';
+		}
+
+		const e = Math.floor(Math.log10(value));
+		let idx = Math.floor(e / 3) - 1;
+		if (idx < 0) idx = 0;
+		if (idx >= units.length) idx = units.length - 1;
+
+		const divisor = 10 ** ((idx + 1) * 3);
+		const unit = units[idx];
+
+		if (value < 10 * divisor) {
+			return toFixedFloor(value / divisor, 1) + unit;
+		} else {
+			return Math.floor(value / divisor) + unit;
+		}
+	});
 </script>
 
-<div class="flex items-center flex-col gap-1">
+<div class="flex items-center flex-col gap-1 px-0.5">
 	<div class="relative">
 		<button
 			class={[
@@ -94,8 +226,11 @@
 			style="--progress: {Math.round(progress.current * 100)}%"
 		></div>
 	</div>
-	<span class="text-black/60 text-sm font-medium dark:text-neutral-300/60">
-		{value}
+	<span
+		class="text-black/60 text-sm font-medium dark:text-neutral-300/60"
+		title={value >= 1000 ? value.toString() : undefined}
+	>
+		{valueFormatted}
 	</span>
 </div>
 

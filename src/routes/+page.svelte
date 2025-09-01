@@ -10,7 +10,7 @@
 <div
 	class="h-screen flex items-center justify-center flex-col gap-4 bg-white dark:bg-neutral-900 text-black dark:text-white"
 >
-	<div class="flex items-center justify-center gap-1">
+	<div class="flex items-center justify-center">
 		{#snippet Reaction(emoji: string)}
 			<ReactionButton
 				reaction={emoji}

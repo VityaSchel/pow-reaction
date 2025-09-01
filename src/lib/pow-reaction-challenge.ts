@@ -1,5 +1,14 @@
 import { z } from 'zod';
 
+export type PowReactionChallenge = {
+	id: string;
+	reaction: string;
+	difficulty: number;
+	exp: number;
+	rounds: string[];
+	ip?: string | undefined;
+};
+
 export const powReactionChallengeSchema = z.object({
 	id: z.uuid(),
 	reaction: z.string().min(1),
@@ -13,4 +22,11 @@ export const powReactionChallengeSchema = z.object({
 	rounds: z.array(z.hex().length(32)).min(1)
 });
 
-export type PowReactionChallenge = z.infer<typeof powReactionChallengeSchema>;
+export type powReactionChallengeSchema = z.infer<typeof powReactionChallengeSchema>;
+
+function _schema1(x: PowReactionChallenge): powReactionChallengeSchema {
+	return x;
+}
+function _schema2(x: powReactionChallengeSchema): PowReactionChallenge {
+	return x;
+}

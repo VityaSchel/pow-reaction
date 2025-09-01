@@ -42,7 +42,10 @@ export class PowReaction {
 		this.setRedeemed = setRedeemed;
 	}
 
-	async getChallengeParams({ ip }: { ip: string }) {
+	async getChallengeParams({ ip }: { ip: string }): Promise<{
+		difficulty: number;
+		rounds: number;
+	}> {
 		const entries = await this.difficulty.getEntries({
 			ip,
 			since: new Date(Date.now() - this.difficulty.windowMs)
@@ -60,7 +63,7 @@ export class PowReaction {
 		ip: string;
 		difficulty: number;
 		rounds: number;
-	}) {
+	}): Promise<string> {
 		const issuedAt = Date.now();
 		const expiresAt = issuedAt + this.ttl;
 
@@ -81,7 +84,7 @@ export class PowReaction {
 		return jwt.sign(challenge, this.secret);
 	}
 
-	async getChallenge({ ip }: { ip: string }) {
+	async getChallenge({ ip }: { ip: string }): Promise<string> {
 		const { difficulty, rounds } = await this.getChallengeParams({ ip });
 		await this.difficulty.putEntry({ ip });
 		return this.generateChallenge({ ip, difficulty, rounds });
@@ -98,7 +101,7 @@ export class PowReaction {
 		request: {
 			ip: string;
 		}
-	) {
+	): Promise<boolean> {
 		let challenge: PowReactionChallenge;
 		try {
 			challenge = powReactionChallengeSchema.parse(jwt.verify(payload, this.secret));

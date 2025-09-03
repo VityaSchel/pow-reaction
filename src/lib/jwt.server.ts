@@ -10,6 +10,24 @@ import {
 import { hmac } from '@noble/hashes/hmac';
 import { sha256 } from '@noble/hashes/sha2';
 
+type NodeCrypto = typeof import('crypto');
+type EdgeCryptoSubtle = Pick<typeof import('crypto'), 'timingSafeEqual'>;
+function timingSafeEqual(a: Uint8Array, b: Uint8Array): boolean {
+	if ('timingSafeEqual' in crypto) {
+		return (crypto as NodeCrypto).timingSafeEqual(a, b);
+	} else if ('timingSafeEqual' in crypto.subtle) {
+		return (crypto.subtle as EdgeCryptoSubtle).timingSafeEqual(a, b);
+	}
+
+	if (a.length !== b.length) return false;
+	let out = 0;
+	let i = -1;
+	while (++i < a.length) {
+		out |= a[i] ^ b[i];
+	}
+	return out === 0;
+}
+
 export function sign(payload: object, secret: Uint8Array) {
 	const header = { alg: joseAlgorithmHS256, typ: 'JWT' };
 
@@ -33,12 +51,8 @@ export const verify = (jwt: string, secret: Uint8Array) => {
 	}
 
 	const expectedSignature = hmac(sha256, secret, signatureMessage);
-	if (
-		!(crypto.subtle as unknown as Pick<typeof import('crypto'), 'timingSafeEqual'>).timingSafeEqual(
-			expectedSignature,
-			signature
-		)
-	) {
+
+	if (!timingSafeEqual(expectedSignature, signature)) {
 		throw new Error('Invalid signature');
 	}
 

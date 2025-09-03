@@ -2,7 +2,7 @@
 /// <reference lib="esnext" />
 /// <reference lib="webworker" />
 
-import { Grinder } from '$lib/pow-solve.js';
+import { Grinder } from './pow-solve.js';
 
 declare const self: DedicatedWorkerGlobalScope;
 

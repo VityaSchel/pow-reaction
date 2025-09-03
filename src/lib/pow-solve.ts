@@ -76,7 +76,6 @@ export async function spawnPowSolveWorker({
 			return new Promise<number>((resolve, reject) => {
 				const worker = new Worker(new URL('./pow-solve-worker', import.meta.url), {
 					type: 'module'
-					// preload: ['$lib/pow-solve.js']
 				});
 
 				worker.onerror = (error) => {

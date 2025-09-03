@@ -14,5 +14,9 @@
   },
   "editor.codeActionsOnSave": {
     "source.fixAll.eslint": "explicit"
+  },
+  "files.associations": {
+    "**/app.css": "tailwindcss",
+    "**/lib/lib.css": "tailwindcss",
   }
 }

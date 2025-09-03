@@ -12,6 +12,7 @@
       "README.md",
       "mod.ts",
       "src/lib/*.ts",
+      "src/lib/lib.css",
       "src/lib/*.svelte"
     ],
     "exclude": [

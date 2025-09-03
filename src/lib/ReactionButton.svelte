@@ -1,5 +1,4 @@
 <script lang="ts">
-	import './lib.css';
 	import { BROWSER } from 'esm-env';
 	import { Spring } from 'svelte/motion';
 	import { spawnPowSolveWorker } from './pow-solve.js';
@@ -175,16 +174,16 @@
 	});
 </script>
 
-<div class="rbtn:flex rbtn:items-center rbtn:flex-col rbtn:gap-1 rbtn:px-0.5">
-	<div class="rbtn:relative">
+<div class="flex items-center flex-col gap-1 px-0.5">
+	<div class="relative">
 		<button
 			class={[
-				'rbtn:rounded-full rbtn:transition-colors rbtn:focus:outline-0 rbtn:inline-block rbtn:text-2xl rbtn:w-10 rbtn:h-10 rbtn:relative rbtn:z-[1]',
+				'rounded-full transition-colors focus:outline-0 inline-block text-2xl w-10 h-10 relative z-[1]',
 				{
-					'rbtn:cursor-pointer rbtn:hover:bg-black/10 rbtn:focus-visible:bg-black/10 rbtn:dark:hover:bg-neutral-400/30 rbtn:dark:focus-visible:bg-neutral-400/30':
+					'cursor-pointer hover:bg-black/10 focus-visible:bg-black/10 dark:hover:bg-neutral-400/30 dark:focus-visible:bg-neutral-400/30':
 						!clicked && BROWSER,
-					'rbtn:cursor-progress': clicked && BROWSER,
-					'rbtn:cursor-default': !BROWSER
+					'cursor-progress': clicked && BROWSER,
+					'cursor-default': !BROWSER
 				}
 			]}
 			title={BROWSER
@@ -218,17 +217,17 @@
 		</button>
 		<div
 			class={[
-				'progress rbtn:absolute rbtn:top-0 rbtn:left-0 rbtn:w-full rbtn:h-full rbtn:rounded-full rbtn:transition-opacity rbtn:duration-200 rbtn:from-black/10 rbtn:dark:from-neutral-400/30',
+				'progress absolute top-0 left-0 w-full h-full rounded-full transition-opacity duration-200 from-black/10 dark:from-neutral-400/30',
 				{
-					'rbtn:opacity-100': clicked,
-					'rbtn:opacity-0': !clicked
+					'opacity-100': clicked,
+					'opacity-0': !clicked
 				}
 			]}
 			style="--progress: {Math.round(progress.current * 100)}%"
 		></div>
 	</div>
 	<span
-		class="rbtn:text-black/60 rbtn:text-sm rbtn:font-medium rbtn:dark:text-neutral-300/60"
+		class="text-black/60 text-sm font-medium dark:text-neutral-300/60"
 		title={value >= 1000 ? value.toString() : undefined}
 	>
 		{valueFormatted}

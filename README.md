@@ -197,6 +197,12 @@ export async function POST({ request }) {
 }
 ```
 
+To include styles, add this directive under `@import "tailwindcss";` in your Tailwind v4 CSS file:
+
+```css
+@source "../node_modules/pow-reaction/dist";
+```
+
 ## Demo
 
 You can find example & demo source code in [src/routes](./src/routes/) directory.

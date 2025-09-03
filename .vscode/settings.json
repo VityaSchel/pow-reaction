@@ -1,22 +1,21 @@
 {
-  "editor.tabCompletion": "on",
-  "path-intellisense.mappings": {
-    "$db": "${workspaceFolder}/src/db"
-  },
-  "eslint.validate": ["javascript", "typescript"],
-  "editor.formatOnSave": true,
-  "editor.defaultFormatter": "esbenp.prettier-vscode",
-  "[javascript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "[typescript]": {
-    "editor.defaultFormatter": "esbenp.prettier-vscode"
-  },
-  "editor.codeActionsOnSave": {
-    "source.fixAll.eslint": "explicit"
-  },
-  "files.associations": {
-    "**/app.css": "tailwindcss",
-    "**/lib/lib.css": "tailwindcss",
-  }
+	"editor.tabCompletion": "on",
+	"path-intellisense.mappings": {
+		"$db": "${workspaceFolder}/src/db"
+	},
+	"eslint.validate": ["javascript", "typescript"],
+	"editor.formatOnSave": true,
+	"editor.defaultFormatter": "esbenp.prettier-vscode",
+	"[javascript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"[typescript]": {
+		"editor.defaultFormatter": "esbenp.prettier-vscode"
+	},
+	"editor.codeActionsOnSave": {
+		"source.fixAll.eslint": "explicit"
+	},
+	"files.associations": {
+		"**/app.css": "tailwindcss"
+	}
 }

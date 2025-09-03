@@ -74,7 +74,7 @@ export async function spawnPowSolveWorker({
 
 		const batchPromises = batch.map((round) => {
 			return new Promise<number>((resolve, reject) => {
-				const worker = new Worker(new URL('./pow-solve-worker.ts', import.meta.url).href, {
+				const worker = new Worker(new URL('./pow-solve-worker', import.meta.url), {
 					type: 'module'
 					// preload: ['$lib/pow-solve.js']
 				});

@@ -1,6 +1,6 @@
 {
 	"name": "pow-reaction",
-	"version": "1.0.6",
+	"version": "1.0.7",
 	"type": "module",
 	"author": "Viktor Shchelochkov <hi@hloth.dev> (https://hloth.dev)",
 	"description": "proof-of-work reactions for your blogs",

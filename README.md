@@ -203,6 +203,15 @@ To include styles, add this directive under `@import "tailwindcss";` in your Tai
 @source "../node_modules/pow-reaction/dist";
 ```
 
+> [!IMPORTANT]
+> Vite deps optimizer does not work with WebWorkers (see [vitejs/vite#11672](https://github.com/vitejs/vite/issues/11672), [vitejs/vite#15547](https://github.com/vitejs/vite/discussions/15547), [vitejs/vite#15618](https://github.com/vitejs/vite/issues/15618)). You must add `pow-reaction` to `optimizeDeps.exclude` in your vite.config.ts in order for WebWorker to load:
+>
+> ```ts
+> optimizeDeps: {
+> 	exclude: ['pow-reaction'];
+> }
+> ```
+
 ## Demo
 
 You can find example & demo source code in [src/routes](./src/routes/) directory.

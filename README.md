@@ -112,6 +112,8 @@ export const reaction = new PowReaction({
 	difficulty: {
 		// how many ms (1/1000 of a second) should be checked when generating a challenge
 		windowMs: 1000 * 60,
+		// min. starting difficulty, optional, defaults to 4
+		minDifficulty: 4,
 		// floor(challenges generated in last `windowMs` * `multiplier`) = number of leading zero bytes in the challenge
 		multiplier: 1,
 		//
@@ -130,6 +132,7 @@ export const reaction = new PowReaction({
 	// in advance, easily solving, and then submitting in batch.
 	// too small values will cause low-end devices not to be able
 	// to submit solutions within this time frame
+	// optional, defaults to 60000 (60 seconds)
 	ttl: 1000 * 60,
 	async isRedeemed(id) {
 		// return whether the challenge id was submitted previously

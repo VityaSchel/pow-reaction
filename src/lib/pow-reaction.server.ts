@@ -7,6 +7,8 @@ import { countLeadingZeroBits } from './utils.js';
 type Difficulty = {
 	/** Time window in milliseconds for counting previous entries */
 	windowMs: number;
+	/** Minimum starting difficulty, defaults to 4 */
+	minDifficulty?: number;
 	/** Difficulty increase per entry */
 	multiplier: number;
 	/** Function to get number of previous entries from given IP since given time */
@@ -62,8 +64,7 @@ export class PowReaction {
 			ip,
 			since: new Date(Date.now() - this.difficulty.windowMs)
 		});
-		const minDifficulty = 4;
-		const difficulty = minDifficulty + Math.floor(entries * this.difficulty.multiplier);
+		const difficulty = (this.difficulty.minDifficulty ?? 4) + Math.floor(entries * this.difficulty.multiplier);
 		return { difficulty, rounds: 50 };
 	}
 

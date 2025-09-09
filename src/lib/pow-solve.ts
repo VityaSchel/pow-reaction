@@ -1,4 +1,3 @@
-import { countLeadingZeroBits } from './utils.js';
 import type { PowReactionChallenge } from './pow-reaction-challenge.js';
 
 function decodeJWT(token: string): object | null {
@@ -17,45 +16,6 @@ function decodeJWT(token: string): object | null {
 	}
 	const result = window.atob(output);
 	return JSON.parse(decodeURIComponent(escape(result)));
-}
-
-/** Client-side logic handling challenge solving */
-export class Grinder {
-	/** Challenge ID */
-	id: string;
-	/** Difficulty settings provided in challenge */
-	difficulty: number;
-	/** Callback on successful solution */
-	onSuccess: (solution: number) => void;
-
-	constructor({
-		id,
-		difficulty,
-		onSuccess
-	}: {
-		id: string;
-		difficulty: number;
-		onSuccess: (solution: number) => void;
-	}) {
-		this.id = id;
-		this.difficulty = difficulty;
-		this.onSuccess = onSuccess;
-	}
-
-	async start() {
-		const encoder = new TextEncoder();
-		let nonce = 0;
-		while (true) {
-			const candidate = `${this.id}.${nonce}`;
-			const h = await self.crypto.subtle.digest('SHA-256', encoder.encode(candidate));
-			const lz = countLeadingZeroBits(new Uint8Array(h));
-			if (lz >= this.difficulty) {
-				this.onSuccess(nonce);
-				break;
-			}
-			nonce++;
-		}
-	}
 }
 
 export async function spawnPowSolveWorker({

@@ -200,12 +200,6 @@ export async function POST({ request }) {
 }
 ```
 
-To include styles, add this directive under `@import "tailwindcss";` in your Tailwind v4 CSS file:
-
-```css
-@source "../node_modules/pow-reaction/dist";
-```
-
 > [!IMPORTANT]
 > Vite deps optimizer does not work with WebWorkers (see [vitejs/vite#11672](https://github.com/vitejs/vite/issues/11672), [vitejs/vite#15547](https://github.com/vitejs/vite/discussions/15547), [vitejs/vite#15618](https://github.com/vitejs/vite/issues/15618)). You must add `pow-reaction` to `optimizeDeps.exclude` in your vite.config.ts in order for WebWorker to load:
 >
@@ -214,6 +208,13 @@ To include styles, add this directive under `@import "tailwindcss";` in your Tai
 > 	exclude: ['pow-reaction'];
 > }
 > ```
+
+## Theme
+
+| CSS variable                        | Description                                            | Default                                                                              |
+| ----------------------------------- | ------------------------------------------------------ | ------------------------------------------------------------------------------------ |
+| `--reaction-button-text-color`      | Value text color                                       | `rgba(0, 0, 0, 0.6)`, `rgba(212, 212, 212, 0.6)` when `(prefers-color-scheme: dark)` |
+| `--reaction-button-highlight-color` | Button highlight color (focus & circular progress bar) | `rgba(0, 0, 0, 0.1)`, `rgba(161, 161, 161, 0.3)` when `(prefers-color-scheme: dark)` |
 
 ## Demo
 

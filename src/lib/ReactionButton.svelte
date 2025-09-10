@@ -1,4 +1,5 @@
 <script lang="ts">
+	import { BROWSER } from 'esm-env';
 	import { Spring } from 'svelte/motion';
 	import { spawnPowSolveWorker } from './pow-solve.js';
 
@@ -171,31 +172,24 @@
 			return Math.floor(value / divisor) + unit;
 		}
 	});
-
-	let browser = $state(false);
-	$effect(() => {
-		browser = true;
-	});
 </script>
 
-<div class="flex items-center flex-col gap-1 px-0.5">
-	<div class="relative">
+<div class="reaction-button">
+	<div class="reaction-button_icon">
 		<button
 			class={[
-				'rounded-full transition-colors focus:outline-0 inline-block text-2xl w-10 h-10 relative z-[1]',
 				{
-					'cursor-pointer hover:bg-black/10 focus-visible:bg-black/10 dark:hover:bg-neutral-400/30 dark:focus-visible:bg-neutral-400/30':
-						!clicked && browser,
-					'cursor-progress': clicked && browser,
-					'cursor-default': !browser
+					'cursor-pointer active': !clicked && BROWSER,
+					'cursor-progress': clicked && BROWSER,
+					'cursor-default': !BROWSER
 				}
 			]}
-			title={browser
+			title={BROWSER
 				? clicked
 					? `${i18n.reactButton.loading} (${Math.floor(progress.current * 100)}%)`
 					: i18n.reactButton.reactWith + ' ' + reaction
 				: i18n.reactButton.jsRequired}
-			disabled={!browser || clicked}
+			disabled={!BROWSER || clicked}
 			onclick={async () => {
 				if (clicked) return;
 				progress.set(0.1, {
@@ -221,7 +215,7 @@
 		</button>
 		<div
 			class={[
-				'progress absolute top-0 left-0 w-full h-full rounded-full transition-opacity duration-200 from-black/10 dark:from-neutral-400/30',
+				'reaction-button_progress',
 				{
 					'opacity-100': clicked,
 					'opacity-0': !clicked
@@ -230,16 +224,107 @@
 			style="--progress: {Math.round(progress.current * 100)}%"
 		></div>
 	</div>
-	<span
-		class="text-black/60 text-sm font-medium dark:text-neutral-300/60"
-		title={value >= 1000 ? value.toString() : undefined}
-	>
+	<span class="reaction-button_text" title={value >= 1000 ? value.toString() : undefined}>
 		{valueFormatted}
 	</span>
 </div>
 
 <style>
-	.progress {
-		background: conic-gradient(var(--tw-gradient-from) var(--progress), transparent 0deg);
+	.reaction-button {
+		display: flex;
+		align-items: center;
+		flex-direction: column;
+		gap: 0.25rem;
+		padding-left: 0.125rem;
+		padding-right: 0.125rem;
+	}
+
+	.reaction-button_icon {
+		position: relative;
+	}
+
+	.reaction-button_text {
+		font-size: 14px;
+		font-weight: 500;
+	}
+	.reaction-button_text {
+		color: var(--reaction-button-text-color, rgba(0, 0, 0, 0.6));
+	}
+	@media (prefers-color-scheme: dark) {
+		.reaction-button_text {
+			color: var(--reaction-button-text-color, rgba(212, 212, 212, 0.6));
+		}
+	}
+
+	.reaction-button button {
+		border-radius: calc(infinity * 1px);
+		display: inline-block;
+		font-size: 1.5rem;
+		width: 2.5rem;
+		height: 2.5rem;
+		position: relative;
+		z-index: 1;
+		transition: background-color 150ms ease;
+
+		&:focus {
+			outline: 0;
+		}
+
+		&.active {
+			&:hover {
+				background-color: var(--reaction-button-highlight-color, rgba(0, 0, 0, 0.1));
+			}
+			&:focus-visible {
+				background-color: var(--reaction-button-highlight-color, rgba(0, 0, 0, 0.1));
+			}
+		}
+		&.cursor-pointer {
+			cursor: pointer;
+		}
+		&.cursor-progress {
+			cursor: progress;
+		}
+		&.cursor-default {
+			cursor: default;
+		}
+	}
+	@media (prefers-color-scheme: dark) {
+		.reaction-button button.active {
+			&:hover {
+				background-color: var(--reaction-button-highlight-color, rgba(161, 161, 161, 0.3));
+			}
+			&:focus-visible {
+				background-color: var(--reaction-button-highlight-color, rgba(161, 161, 161, 0.3));
+			}
+		}
+	}
+
+	.reaction-button_progress {
+		position: absolute;
+		top: 0;
+		left: 0;
+		width: 100%;
+		height: 100%;
+		border-radius: calc(infinity * 1px);
+		transition: opacity 200ms ease;
+		background: conic-gradient(
+			var(--reaction-button-highlight-color, rgba(0, 0, 0, 0.1)) var(--progress),
+			transparent 0deg
+		);
+
+		&.opacity-0 {
+			opacity: 0;
+		}
+		&.opacity-100 {
+			opacity: 1;
+		}
+	}
+	@media (prefers-color-scheme: dark) {
+		.reaction-button_progress {
+			background: conic-gradient(
+				var(--reaction-button-highlight-color, rgba(161, 161, 161, 0.3)) var(--progress),
+				transparent 0deg
+			);
+		}
 	}
 </style>

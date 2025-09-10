@@ -6,6 +6,7 @@
       "dependencies": {
         "@noble/hashes": "^2.0.0",
         "@oslojs/jwt": "^0.3.0",
+        "esm-env": "^1.2.2",
         "zod": "^4.1.5",
       },
       "devDependencies": {

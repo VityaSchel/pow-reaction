@@ -1,6 +1,6 @@
 {
 	"name": "pow-reaction",
-	"version": "1.0.11",
+	"version": "1.0.12",
 	"type": "module",
 	"author": "Viktor Shchelochkov <hi@hloth.dev> (https://hloth.dev)",
 	"description": "proof-of-work reactions for your blogs",
@@ -86,7 +86,6 @@
 	"dependencies": {
 		"@noble/hashes": "^2.0.0",
 		"@oslojs/jwt": "^0.3.0",
-		"esm-env": "^1.2.2",
 		"zod": "^4.1.5"
 	}
 }

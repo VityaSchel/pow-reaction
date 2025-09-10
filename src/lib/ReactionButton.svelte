@@ -1,5 +1,4 @@
 <script lang="ts">
-	import { BROWSER } from 'esm-env';
 	import { Spring } from 'svelte/motion';
 	import { spawnPowSolveWorker } from './pow-solve.js';
 
@@ -172,6 +171,11 @@
 			return Math.floor(value / divisor) + unit;
 		}
 	});
+
+	let browser = $state(false);
+	$effect(() => {
+		browser = true;
+	});
 </script>
 
 <div class="flex items-center flex-col gap-1 px-0.5">
@@ -181,17 +185,17 @@
 				'rounded-full transition-colors focus:outline-0 inline-block text-2xl w-10 h-10 relative z-[1]',
 				{
 					'cursor-pointer hover:bg-black/10 focus-visible:bg-black/10 dark:hover:bg-neutral-400/30 dark:focus-visible:bg-neutral-400/30':
-						!clicked && BROWSER,
-					'cursor-progress': clicked && BROWSER,
-					'cursor-default': !BROWSER
+						!clicked && browser,
+					'cursor-progress': clicked && browser,
+					'cursor-default': !browser
 				}
 			]}
-			title={BROWSER
+			title={browser
 				? clicked
 					? `${i18n.reactButton.loading} (${Math.floor(progress.current * 100)}%)`
 					: i18n.reactButton.reactWith + ' ' + reaction
 				: i18n.reactButton.jsRequired}
-			disabled={!BROWSER || clicked}
+			disabled={!browser || clicked}
 			onclick={async () => {
 				if (clicked) return;
 				progress.set(0.1, {

@@ -55,7 +55,7 @@ bun add pow-reaction
 bunx jsr add @hloth/pow-reaction
 ``` -->
 
-JSR is blocked (see [#1](https://github.com/VityaSchel/pow-reaction/issues/1))
+JSR is blocked (see [#1](https://git.hloth.dev/hloth/pow-reaction/issues/1))
 
 In your Svelte UI component (client-side):
 

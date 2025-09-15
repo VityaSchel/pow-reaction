@@ -1,6 +1,6 @@
 {
 	"name": "pow-reaction",
-	"version": "1.0.13",
+	"version": "1.0.14",
 	"type": "module",
 	"author": "Viktor Shchelochkov <hi@hloth.dev> (https://hloth.dev)",
 	"description": "proof-of-work reactions for your blogs",
@@ -20,12 +20,12 @@
 	"license": "MIT",
 	"repository": {
 		"type": "git",
-		"url": "git+https://github.com/VityaSchel/pow-reaction.git"
+		"url": "git+https://git.hloth.dev/hloth/pow-reaction.git"
 	},
 	"bugs": {
-		"url": "https://github.com/VityaSchel/pow-reaction/issues"
+		"url": "https://git.hloth.dev/hloth/pow-reaction/issues"
 	},
-	"homepage": "https://github.com/VityaSchel/pow-reaction#readme",
+	"homepage": "https://git.hloth.dev/hloth/pow-reaction#readme",
 	"scripts": {
 		"dev": "vite dev",
 		"build": "rm -rf dist && vite build && bun run prepack",

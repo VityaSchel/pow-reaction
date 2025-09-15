@@ -1,6 +1,6 @@
 # pow-reaction
 
-[![GitHub License](https://img.shields.io/github/license/VityaSchel/pow-reaction)](https://github.com/VityaSchel/pow-reaction/blob/main/LICENSE)
+[![License](https://img.shields.io/npm/l/pow-reaction)](https://git.hloth.dev/hloth/pow-reaction/src/main/LICENSE)
 [![NPM Version](https://img.shields.io/npm/v/pow-reaction)](https://www.npmjs.com/package/pow-reaction)
 [![NPM Unpacked Size](https://img.shields.io/npm/unpacked-size/pow-reaction)](https://www.npmjs.com/package/pow-reaction)
 

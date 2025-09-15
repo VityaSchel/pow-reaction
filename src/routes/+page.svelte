@@ -44,7 +44,7 @@
 		try clicking on any 10-15 times
 	</span>
 	<span class="text-xs text-neutral-400 dark:text-neutral-700">
-		<a href="https://github.com/VityaSchel/pow-reaction" target="_blank" rel="noopener noreferrer">
+		<a href="https://git.hloth.dev/hloth/pow-reaction" target="_blank" rel="noopener noreferrer">
 			source
 		</a>
 		by

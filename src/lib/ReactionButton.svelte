@@ -271,8 +271,10 @@
 		}
 
 		&.active {
-			&:hover {
-				background-color: var(--reaction-button-highlight-color, rgba(0, 0, 0, 0.1));
+			@media (hover: hover) and (pointer: fine) {
+				&:hover {
+					background-color: var(--reaction-button-highlight-color, rgba(0, 0, 0, 0.1));
+				}
 			}
 			&:focus-visible {
 				background-color: var(--reaction-button-highlight-color, rgba(0, 0, 0, 0.1));
@@ -290,12 +292,14 @@
 	}
 	@media (prefers-color-scheme: dark) {
 		.reaction-button button.active {
-			&:hover {
-				background-color: var(--reaction-button-highlight-color, rgba(161, 161, 161, 0.3));
-			}
 			&:focus-visible {
 				background-color: var(--reaction-button-highlight-color, rgba(161, 161, 161, 0.3));
 			}
+		}
+	}
+	@media (prefers-color-scheme: dark) and (hover: hover) and (pointer: fine) {
+		.reaction-button button.active:hover {
+			background-color: var(--reaction-button-highlight-color, rgba(161, 161, 161, 0.3));
 		}
 	}
 

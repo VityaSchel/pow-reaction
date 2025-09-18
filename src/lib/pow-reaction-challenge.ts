@@ -12,8 +12,8 @@ export type PowReactionChallenge = {
 	exp: number;
 	/** Array of hex-encoded SHA-256 salts for each round */
 	rounds: string[];
-	/** IP address the challenge was issued for */
-	ip: string;
+	/** Client params binding challenge to a context */
+	clientId: string;
 };
 
 export const powReactionChallengeSchema = z.object({
@@ -25,7 +25,7 @@ export const powReactionChallengeSchema = z.object({
 		.max(32 * 8)
 		.int(),
 	exp: z.number().int().nonnegative(),
-	ip: z.union([z.ipv4(), z.ipv6()]),
+	clientId: z.string().length(64),
 	rounds: z.array(z.hex().length(32)).min(1)
 });
 

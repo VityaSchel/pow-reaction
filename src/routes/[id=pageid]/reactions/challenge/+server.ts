@@ -3,7 +3,7 @@ import { json } from '@sveltejs/kit';
 import { powReactions } from '../../../reactions.server.js';
 import { reactions } from '../../../reactions.js';
 
-export async function POST({ request, platform, getClientAddress }) {
+export async function POST({ request, platform, getClientAddress, params }) {
 	const body = await z
 		.object({
 			reaction: z.enum(reactions)
@@ -23,6 +23,6 @@ export async function POST({ request, platform, getClientAddress }) {
 		throw new Error('Cloudflare KV is not available');
 	}
 	const powReaction = powReactions({ platform })[body.data.reaction];
-	const challenge = await powReaction.getChallenge({ ip });
+	const challenge = await powReaction.getChallenge({ ip, pageId: params.id });
 	return json({ challenge });
 }

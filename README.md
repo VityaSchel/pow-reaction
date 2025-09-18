@@ -104,11 +104,15 @@ import { PowReaction } from 'pow-reaction';
 // load from process.env or something, it should be 32 bytes long
 const secret = new TextEncoder().encode('HESOYAM_HESOYAM_HESOYAM_HESOYAM!');
 
-export const reaction = new PowReaction({
+type ClientParams = { ip: string; pageId: string };
+
+export const reaction = new PowReaction<ClientParams>({
 	// secret is used to cryptographically sign challenge
 	secret,
 	// reaction can be any string, emoji or enum value
 	reaction: '😘',
+	// optional but decreases the chance of dehashing client params in case of database breach
+	clientParamsSalt: 'my-app-name',
 	difficulty: {
 		// how many ms (1/1000 of a second) should be checked when generating a challenge
 		windowMs: 1000 * 60,
@@ -116,15 +120,15 @@ export const reaction = new PowReaction({
 		minDifficulty: 4,
 		// floor(challenges generated in last `windowMs` * `multiplier`) = number of leading zero bytes in the challenge
 		multiplier: 1,
-		//
-		async getEntries({ ip, since }) {
+		async getEntries({ clientId, since }) {
 			// return number of entries in your persistant storage
-			// an IP address `ip` has been added to it
+			// a client with `clientId` has been added to it
 			// starting from `since` Date
 		},
-		async putEntry({ ip }) {
-			// put an IP address `ip` to your persistant storage
-			// and assign current date `new Date()` to the entry
+		async putEntry({ clientId }) {
+			// put an entry for client with `clientId` to your
+			// persistant storage and assign current
+			// date `new Date()` to the entry
 		}
 	},
 	// how long should a signed challenge be valid
@@ -134,11 +138,11 @@ export const reaction = new PowReaction({
 	// to submit solutions within this time frame
 	// optional, defaults to 60000 (60 seconds)
 	ttl: 1000 * 60,
-	async isRedeemed(id) {
-		// return whether the challenge id was submitted previously
+	async isRedeemed({ challengeId }) {
+		// return whether the `challengeId` was submitted previously
 	},
-	async setRedeemed(id) {
-		// put the successfully submitted challenge id
+	async setRedeemed({ challengeId }) {
+		// put the successfully submitted `challengeId`
 	}
 });
 ```
@@ -163,7 +167,11 @@ export async function POST({ request }) {
 
 	// get from headers or event.getClientAddress(), see https://github.com/sveltejs/kit/pull/4289
 	const ip = '1.2.3.4';
-	const challenge = await reaction.getChallenge({ ip });
+	// by passing pageId you're binding this challenge to this page
+	// meaning the solution won't work for other pages but also that
+	// the rate limit of this challenge will only count for this page
+	const client = { ip, pageId: '/demo' };
+	const challenge = await reaction.getChallenge(client);
 	return json({ challenge });
 }
 ```
@@ -192,7 +200,9 @@ export async function POST({ request }) {
 	// get from headers or event.getClientAddress(), see https://github.com/sveltejs/kit/pull/4289
 	const ip = '1.2.3.4';
 
-	const success = await reaction.verifySolution({ challenge, solutions }, { ip });
+	// client must be exactly the same as in getChallenge
+	const client = { ip, pageId: '/demo' };
+	const success = await reaction.verifySolution({ challenge, solutions }, client);
 	if (success) {
 		// increase number of reactions by +1 in your database
 	}

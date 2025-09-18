@@ -7,35 +7,35 @@ export class CloudflareKvDb {
 		this.db = db;
 	}
 
-	async getReactions(emoji: Emoji) {
-		return await this.db.get(`reactions:demo_page:${emoji}`).then((v) => (v ? parseInt(v, 10) : 0));
+	async getReactions({ pageId, emoji }: { pageId: string; emoji: Emoji }) {
+		return await this.db.get(`reactions:${pageId}:${emoji}`).then((v) => (v ? parseInt(v, 10) : 0));
 	}
 
-	async increaseReactions(emoji: Emoji) {
-		const value = await this.getReactions(emoji);
-		await this.db.put(`reactions:demo_page:${emoji}`, (value + 1).toString());
+	async increaseReactions({ pageId, emoji }: { pageId: string; emoji: Emoji }) {
+		const value = await this.getReactions({ pageId, emoji });
+		await this.db.put(`reactions:${pageId}:${emoji}`, (value + 1).toString());
 	}
 
-	async getIpEntries({ emoji, ip }: { emoji: Emoji; ip: string }) {
-		const entriesJSON = await this.db.get(`entries:demo_page:${emoji}:${ip}`);
+	async getClientEntries({ clientId }: { clientId: string }) {
+		const entriesJSON = await this.db.get(`entries:${clientId}`);
 		const timestamps = entriesJSON ? (JSON.parse(entriesJSON) as number[]) : [];
 		return timestamps;
 	}
 
-	async putIpEntry({ emoji, ip }: { emoji: Emoji; ip: string }) {
-		const timestamps = await this.getIpEntries({ emoji, ip });
+	async putClientEntry({ clientId }: { clientId: string }) {
+		const timestamps = await this.getClientEntries({ clientId });
 		timestamps.push(Date.now());
-		await this.db.put(`entries:demo_page:${emoji}:${ip}`, JSON.stringify(timestamps), {
+		await this.db.put(`entries:${clientId}`, JSON.stringify(timestamps), {
 			expirationTtl: 60 * 60 * 24
 		});
 	}
 
-	async isRedeemed(id: string) {
-		const value = await this.db.get(`redeemed:demo_page:${id}`);
+	async isRedeemed({ challengeId }: { challengeId: string }) {
+		const value = await this.db.get(`redeemed:${challengeId}`);
 		return value !== null;
 	}
 
-	async setRedeemed(id: string) {
-		await this.db.put(`redeemed:demo_page:${id}`, '', { expirationTtl: 60 * 60 * 24 });
+	async setRedeemed({ challengeId }: { challengeId: string }) {
+		await this.db.put(`redeemed:${challengeId}`, '', { expirationTtl: 60 * 60 * 24 });
 	}
 }

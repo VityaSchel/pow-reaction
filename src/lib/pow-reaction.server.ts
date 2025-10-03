@@ -1,6 +1,6 @@
 import * as jwt from './jwt.server';
-import { sha256 } from '@noble/hashes/sha2';
-import { utf8ToBytes, bytesToHex, randomBytes } from '@noble/hashes/utils';
+import { sha256 } from '@noble/hashes/sha2.js';
+import { utf8ToBytes, bytesToHex, randomBytes } from '@noble/hashes/utils.js';
 import { powReactionChallengeSchema, type PowReactionChallenge } from './pow-reaction-challenge.js';
 import { countLeadingZeroBits } from './utils.js';
 

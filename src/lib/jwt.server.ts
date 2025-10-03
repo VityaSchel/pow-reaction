@@ -7,8 +7,8 @@ import {
 	JWSRegisteredHeaders,
 	JWTRegisteredClaims
 } from '@oslojs/jwt';
-import { hmac } from '@noble/hashes/hmac';
-import { sha256 } from '@noble/hashes/sha2';
+import { hmac } from '@noble/hashes/hmac.js';
+import { sha256 } from '@noble/hashes/sha2.js';
 
 type NodeCrypto = typeof import('crypto');
 type EdgeCryptoSubtle = Pick<typeof import('crypto'), 'timingSafeEqual'>;

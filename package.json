@@ -1,9 +1,10 @@
 {
 	"name": "pow-reaction",
-	"version": "1.0.17",
+	"version": "1.0.18",
 	"type": "module",
 	"author": "Viktor Shchelochkov <hi@hloth.dev> (https://hloth.dev)",
 	"description": "proof-of-work reactions for your blogs",
+	"license": "MIT",
 	"funding": "https://hloth.dev/donate",
 	"support": {
 		"backing": {
@@ -17,7 +18,6 @@
 		"proof-of-work",
 		"blog-component"
 	],
-	"license": "MIT",
 	"repository": {
 		"type": "git",
 		"url": "git+https://git.hloth.dev/hloth/pow-reaction.git"
@@ -55,7 +55,8 @@
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
-			"svelte": "./dist/index.js"
+			"svelte": "./dist/ReactionButton.svelte",
+			"import": "./dist/index.js"
 		}
 	},
 	"peerDependencies": {

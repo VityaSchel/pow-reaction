@@ -55,7 +55,7 @@
 	"exports": {
 		".": {
 			"types": "./dist/index.d.ts",
-			"svelte": "./dist/ReactionButton.svelte",
+			"svelte": "./dist/index.js",
 			"import": "./dist/index.js"
 		}
 	},

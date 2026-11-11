@@ -1,6 +1,5 @@
 import z from 'zod';
 import { env } from 'cloudflare:workers';
-import { json } from '@sveltejs/kit';
 import { powReactions } from '../../reactions.server.js';
 import { reactions } from '../../reactions.js';
 import { CloudflareKvDb } from '../../demo-db.server.js';
@@ -15,13 +14,13 @@ export async function POST({ request, getClientAddress, params }) {
 		.safeParseAsync(await request.json());
 
 	if (!body.success) {
-		return json({ success: false }, { status: 400 });
+		return Response.json({ success: false }, { status: 400 });
 	}
 	const { challenge, solutions } = body.data;
 
 	const ip = getClientAddress();
 	if (!ip) {
-		return json({ success: false }, { status: 403 });
+		return Response.json({ success: false }, { status: 403 });
 	}
 
 	const powReaction = powReactions()[body.data.reaction];
@@ -33,5 +32,5 @@ export async function POST({ request, getClientAddress, params }) {
 		const db = new CloudflareKvDb(env.pow_reaction_demo);
 		await db.increaseReactions({ pageId: params.id, emoji: body.data.reaction });
 	}
-	return json({ success });
+	return Response.json({ success });
 }

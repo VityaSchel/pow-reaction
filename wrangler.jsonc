@@ -6,9 +6,7 @@
 	"$schema": "node_modules/wrangler/config-schema.json",
 	"name": "pow-reaction",
 	"compatibility_date": "2025-08-31",
-	"compatibility_flags": [
-		"nodejs_als"
-	],
+	"compatibility_flags": ["nodejs_als"],
 	"pages_build_output_dir": ".svelte-kit/cloudflare",
 	"observability": {
 		"enabled": true

@@ -1,21 +1,13 @@
 {
-  "$schema": "https://jsr.io/schema/config-file.v1.json",
-  "name": "@hloth/pow-reaction",
-  "version": "1.0.20",
-  "license": "MIT",
-  "exports": {
-    ".": "./mod.ts"
-  },
-  "publish": {
-    "include": [
-      "LICENSE",
-      "README.md",
-      "mod.ts",
-      "src/lib/*.ts",
-      "src/lib/*.svelte"
-    ],
-    "exclude": [
-      "src/lib/index.ts"
-    ]
-  }
+	"$schema": "https://jsr.io/schema/config-file.v1.json",
+	"name": "@hloth/pow-reaction",
+	"version": "1.0.20",
+	"license": "MIT",
+	"exports": {
+		".": "./mod.ts"
+	},
+	"publish": {
+		"include": ["LICENSE", "README.md", "mod.ts", "src/lib/*.ts", "src/lib/*.svelte"],
+		"exclude": ["src/lib/index.ts"]
+	}
 }

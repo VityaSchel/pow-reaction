@@ -10,13 +10,17 @@ import {
 import { hmac } from '@noble/hashes/hmac.js';
 import { sha256 } from '@noble/hashes/sha2.js';
 
-type NodeCrypto = typeof import('crypto');
-type EdgeCryptoSubtle = Pick<typeof import('crypto'), 'timingSafeEqual'>;
+type NativeTimingSafeEqual = { timingSafeEqual(a: Uint8Array, b: Uint8Array): boolean };
+
+function hasTimingSafeEqual(target: object): target is NativeTimingSafeEqual {
+	return 'timingSafeEqual' in target;
+}
+
 function timingSafeEqual(a: Uint8Array, b: Uint8Array): boolean {
-	if ('timingSafeEqual' in crypto) {
-		return (crypto as NodeCrypto).timingSafeEqual(a, b);
-	} else if ('timingSafeEqual' in crypto.subtle) {
-		return (crypto.subtle as EdgeCryptoSubtle).timingSafeEqual(a, b);
+	if (hasTimingSafeEqual(crypto)) {
+		return crypto.timingSafeEqual(a, b);
+	} else if (hasTimingSafeEqual(crypto.subtle)) {
+		return crypto.subtle.timingSafeEqual(a, b);
 	}
 
 	if (a.length !== b.length) return false;

@@ -86,7 +86,7 @@
 		"wrangler": "^4.41.0"
 	},
 	"dependencies": {
-		"@noble/hashes": "^2.0.1",
+		"@noble/hashes": "^2.4.0",
 		"@oslojs/jwt": "^0.3.0",
 		"esm-env": "^1.2.2",
 		"zod": "^4.6.7"

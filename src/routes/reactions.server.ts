@@ -1,14 +1,15 @@
-import { PowReaction } from '$lib/pow-reaction.server';
+import { env } from 'cloudflare:workers';
+import { PowReaction } from '#lib/pow-reaction.server.js';
 import { CloudflareKvDb } from './demo-db.server';
 import { reactions } from './reactions';
 
-export const powReactions = ({ platform }: { platform: App.Platform }) => {
-	const db = new CloudflareKvDb(platform.env.pow_reaction_demo);
+export const powReactions = () => {
+	const db = new CloudflareKvDb(env.pow_reaction_demo);
 	return Object.fromEntries(
 		reactions.map((emoji) => [
 			emoji,
 			new PowReaction<{ ip: string; pageId: string }>({
-				secret: new TextEncoder().encode(platform.env.JWT_SECRET),
+				secret: new TextEncoder().encode(env.JWT_SECRET),
 				reaction: emoji,
 				difficulty: {
 					windowMs: 1000 * 60 * 60 * 24,

@@ -2,7 +2,7 @@
 	import z from 'zod';
 	import { reactions } from '../reactions.js';
 	import { invalidate } from '$app/navigation';
-	import ReactionButton from '$lib/ReactionButton.svelte';
+	import ReactionButton from '#lib/ReactionButton.svelte';
 	import { page } from '$app/state';
 
 	let { data } = $props();

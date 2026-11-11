@@ -1,7 +1,3 @@
-/// <reference no-default-lib="true"/>
-/// <reference lib="esnext" />
-/// <reference lib="webworker" />
-
 import { countLeadingZeroBits } from './utils.js';
 
 /** Client-side logic handling challenge solving */
@@ -43,7 +39,14 @@ export class Grinder {
 	}
 }
 
-declare const self: DedicatedWorkerGlobalScope;
+interface DedicatedWorkerScope {
+	crypto: Crypto;
+	postMessage(message: unknown): void;
+	close(): void;
+	onmessage: ((event: MessageEvent) => void) | null;
+}
+
+declare const self: DedicatedWorkerScope;
 
 const onSuccess = (solution: number) => {
 	self.postMessage(solution);

@@ -10,7 +10,7 @@
 		"sourceMap": true,
 		"strict": true,
 		"moduleResolution": "bundler",
-		"types": ["$app/types", "src/worker-configuration.d.ts"]
+		"types": ["$app/types"]
 	},
 	"include": ["src", "vite.config.ts"],
 	"exclude": ["src/service-worker"]

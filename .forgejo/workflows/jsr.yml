@@ -1,23 +1,88 @@
 name: Publish (JSR)
+
 on:
   release:
     types: [published]
   workflow_dispatch:
+    inputs:
+      tag:
+        description: tag to publish; must match the package version
+        type: string
+        required: true
+
+concurrency:
+  group: publish-jsr-${{ forgejo.event.inputs.tag || forgejo.event.release.tag_name }}
+  cancel-in-progress: false
 
 jobs:
   publish:
-    runs-on: node-latest
-
-    permissions:
-      contents: read
-      id-token: write
-
+    runs-on: ['debian', '4c8g', 'hetzner']
+    timeout-minutes: 30
+    defaults:
+      run:
+        shell: >-
+          /usr/bin/env
+          -u GITHUB_TOKEN -u FORGEJO_TOKEN
+          -u ACTIONS_RUNTIME_TOKEN
+          -u ACTIONS_ID_TOKEN_REQUEST_TOKEN -u ACTIONS_ID_TOKEN_REQUEST_URL
+          -u ACTIONS_CACHE_URL -u ACTIONS_RUNTIME_URL -u ACTIONS_RESULTS_URL
+          bash --noprofile --norc -e -o pipefail {0}
+    env:
+      RELEASE_TAG: ${{ forgejo.event.inputs.tag || forgejo.event.release.tag_name }}
+      WORKSPACE: /opt/pow-reaction
+      BUN_VERSION: '1.4.4'
+      BUN_SHA256: 'bf8ccbfb2b0b80159e0f9a6d15c55317add8077534dbc6130a3edb52fccb395c'
+      BUN_INSTALL: /opt/bun
     steps:
-      - uses: actions/checkout@v4
-      - uses: oven-sh/setup-bun@v2
+      - name: Verify CI environment
+        run: |
+          leaked=$(env | grep -iE '(TOKEN|SECRET|PASSWORD|CREDENTIAL|KEY)=.' || true)
+          [ -z "$leaked" ] || { echo "FATAL: privileged credential reachable by build code:"; echo "$leaked" | sed 's/=.*/=<redacted>/'; exit 1; }
+
+      - name: Check out the tag
+        run: |
+          : "${WORKSPACE:?}" "${RELEASE_TAG:?}"
+          rm -rf "$WORKSPACE"
+          mkdir -p "$WORKSPACE"
+          cd "$WORKSPACE"
+
+          git init -q .
+          git remote add origin "$FORGEJO_SERVER_URL/$FORGEJO_REPOSITORY.git"
+          git fetch -q --depth 1 origin "refs/tags/$RELEASE_TAG"
+          git checkout -q FETCH_HEAD
+          echo "publishing $RELEASE_TAG at $(git rev-parse HEAD)"
+
+      - name: Install system packages
+        run: |
+          missing=()
+          command -v unzip >/dev/null 2>&1 || missing+=(unzip)
+          command -v curl >/dev/null 2>&1 || missing+=(curl ca-certificates)
+          if [ ${#missing[@]} -gt 0 ]; then
+            export DEBIAN_FRONTEND=noninteractive
+            apt-get update -y
+            apt-get install -y --no-install-recommends "${missing[@]}"
+          fi
+
+      - name: Install the pinned Bun
+        run: |
+          curl -fsSLo /tmp/bun.zip "https://github.com/oven-sh/bun/releases/download/bun-v${BUN_VERSION}/bun-linux-x64.zip"
+          echo "${BUN_SHA256}  /tmp/bun.zip" | sha256sum -c -
+          mkdir -p "$BUN_INSTALL/bin"
+          unzip -q -o -j /tmp/bun.zip bun-linux-x64/bun -d "$BUN_INSTALL/bin"
+          echo "$BUN_INSTALL/bin" >> "$GITHUB_PATH"
+
+      - name: Check the tag matches the version
+        run: |
+          cd "$WORKSPACE"
+          for file in package.json jsr.json; do
+            version=$(bun --print "require('./$file').version")
+            [ "v$version" = "$RELEASE_TAG" ] || { echo "FATAL: $file says $version, the tag is $RELEASE_TAG" >&2; exit 1; }
+          done
 
       - name: Install dependencies
-        run: bun i --frozen-lockfile
+        run: cd "$WORKSPACE" && bun install --frozen-lockfile
 
-      - name: Publish package
-        run: bunx --bun jsr publish --token ${{ secrets.JSR_TOKEN }}
+      - name: Publish to JSR
+        env:
+          JSR_TOKEN: ${{ secrets.JSR_TOKEN }}
+        run: cd "$WORKSPACE" && bunx jsr@0.14.3 publish --token "$JSR_TOKEN"

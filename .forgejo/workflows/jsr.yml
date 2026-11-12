@@ -85,4 +85,4 @@ jobs:
       - name: Publish to JSR
         env:
           JSR_TOKEN: ${{ secrets.JSR_TOKEN }}
-        run: cd "$WORKSPACE" && bunx jsr@0.14.3 publish --token "$JSR_TOKEN"
+        run: cd "$WORKSPACE" && bun x --bun jsr@0.14.3 publish --token "$JSR_TOKEN"

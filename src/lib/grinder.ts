@@ -1,0 +1,40 @@
+import { countLeadingZeroBits } from './utils.js';
+
+/** Client-side logic handling challenge solving */
+export class Grinder {
+	/** Challenge ID */
+	id: string;
+	/** Difficulty settings provided in challenge */
+	difficulty: number;
+	/** Callback on successful solution */
+	onSuccess: (solution: number) => void;
+
+	constructor({
+		id,
+		difficulty,
+		onSuccess
+	}: {
+		id: string;
+		difficulty: number;
+		onSuccess: (solution: number) => void;
+	}) {
+		this.id = id;
+		this.difficulty = difficulty;
+		this.onSuccess = onSuccess;
+	}
+
+	async start() {
+		const encoder = new TextEncoder();
+		let nonce = 0;
+		while (true) {
+			const candidate = `${this.id}.${nonce}`;
+			const h = await crypto.subtle.digest('SHA-256', encoder.encode(candidate));
+			const lz = countLeadingZeroBits(new Uint8Array(h));
+			if (lz >= this.difficulty) {
+				this.onSuccess(nonce);
+				break;
+			}
+			nonce++;
+		}
+	}
+}

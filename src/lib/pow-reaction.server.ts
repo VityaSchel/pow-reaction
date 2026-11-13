@@ -34,8 +34,8 @@ export class PowReaction<ClientParams extends object = never> {
 	difficulty: Difficulty;
 	/** Maximum solving time (Default: 60s) */
 	ttl: number;
-	/** Optional hash for clientId generation, should be set to your app's name */
-	clientParamsSalt: string = 'pow-reaction';
+	/** Salt for clientId hashing, should be set to your app's name (Default: 'pow-reaction') */
+	clientParamsSalt: string;
 	/** Function to check whether a challenge solution was already submitted */
 	isRedeemed: ({ challengeId }: { challengeId: string }) => Promise<boolean>;
 	/** Function to mark a challenge as redeemed */
@@ -45,6 +45,7 @@ export class PowReaction<ClientParams extends object = never> {
 		secret,
 		reaction,
 		ttl,
+		clientParamsSalt,
 		difficulty,
 		isRedeemed,
 		setRedeemed
@@ -52,6 +53,7 @@ export class PowReaction<ClientParams extends object = never> {
 		secret: Uint8Array;
 		reaction: string;
 		ttl?: number;
+		clientParamsSalt?: string;
 		difficulty: Difficulty;
 		isRedeemed: ({ challengeId }: { challengeId: string }) => Promise<boolean>;
 		setRedeemed: ({ challengeId }: { challengeId: string }) => Promise<void>;
@@ -59,6 +61,7 @@ export class PowReaction<ClientParams extends object = never> {
 		this.secret = secret;
 		this.reaction = reaction;
 		this.ttl = ttl ?? 1000 * 60;
+		this.clientParamsSalt = clientParamsSalt ?? 'pow-reaction';
 		this.difficulty = difficulty;
 		this.isRedeemed = isRedeemed;
 		this.setRedeemed = setRedeemed;

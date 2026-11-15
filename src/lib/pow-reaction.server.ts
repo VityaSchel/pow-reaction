@@ -1,4 +1,4 @@
-import * as jwt from './jwt.server';
+import * as jwt from './jwt.server.js';
 import { sha256 } from '@noble/hashes/sha2.js';
 import { utf8ToBytes, bytesToHex, randomBytes } from '@noble/hashes/utils.js';
 import { powReactionChallengeSchema, type PowReactionChallenge } from './pow-reaction-challenge.js';
